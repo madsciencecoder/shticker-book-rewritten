@@ -29,10 +29,10 @@
 #define PLATFORM    "linux2"
 #define ENGINE_FILENAME "TTREngine"
 
-//for windows support (not used yet because I don't used Windows, included in case someone would like to compile it)
+//for windows support (should now work)
 #elif defined(Q_OS_WIN)
 #define FILES_PATH  ""
-#define ENGINE_FILENAME "TTREngine.exe"
+#define ENGINE_FILENAME QString("TTREngine.exe")
 #define PLATFORM    "win32"
 
 //For OS X support (not used because no mac to compile and test on)
@@ -52,4 +52,4 @@
 #define CDN_URL "https://cdn.toontownrewritten.com/content/"
 
 //cache directory for web apps and temporary downloads of updated files
-#define CACHE_DIR   FILES_PATH + "cache/"
+#define CACHE_DIR   FILES_PATH + QString("cache/")

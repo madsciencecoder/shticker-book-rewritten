@@ -49,7 +49,7 @@ bool ExtractionWorker::extractBz2(QString compressedFileName, QString extractedF
     }
 
     //open the compressed file
-    compressedFile = fopen(compressedFileName.toStdString().c_str(), "r");
+    compressedFile = fopen(compressedFileName.toStdString().c_str(), "rb");
     if(!compressedFile)
     {
         QLOG_ERROR() << "Error opening file: " << compressedFileName << endl;

@@ -36,6 +36,16 @@ LauncherWindow::LauncherWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui
 
     ui->setupUi(this);
 
+    //check to make sure the cache directory exists and make it if it doesn't
+    if(!QDir(FILES_PATH).exists())
+    {
+        QDir().mkdir(FILES_PATH);
+    }
+    if(!QDir(CACHE_DIR).exists())
+    {
+        QDir().mkdir(CACHE_DIR);
+    }
+
     //allow QWebView to store data locally and create a cache for faster loading
     QWebSettings::globalSettings()->setAttribute(QWebSettings::LocalStorageEnabled, true);
     QWebSettings::globalSettings()->setLocalStoragePath(CACHE_DIR);

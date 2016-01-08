@@ -75,15 +75,6 @@ int PatchWorker::patchFile(QString patchFile, QString targetFile)
     QFile file(newFileTemp);
     file.rename(targetFile);
 
-//    //check to make sure the patch is good
-//    HashWorker *hashWorker = new HashWorker(this);
-//    if(hashWorker->getHash(targetFile) != patchedHash)
-//    {
-//        QLOG_ERROR() << "Hash of extracted file does not match the most up to date";
-
-//        return 1;
-//    }
-
     return 0;
 }
 
@@ -103,7 +94,7 @@ int PatchWorker::bsdiff_patch(char *patchFile, char *oldFile, char *newFile)
     off_t i;
 
     /* Open patch file */
-    if ((f = fopen(patchFile, "r")) == NULL)
+    if ((f = fopen(patchFile, "rb")) == NULL)
     {
         QLOG_ERROR() << "Unable to open patch file.";
 
@@ -158,7 +149,7 @@ int PatchWorker::bsdiff_patch(char *patchFile, char *oldFile, char *newFile)
 
         return 1;
     }
-    if ((cpf = fopen(patchFile, "r")) == NULL)
+    if ((cpf = fopen(patchFile, "rb")) == NULL)
     {
         QLOG_ERROR() << "Unable to open patch file with bzip2";
 
@@ -176,7 +167,7 @@ int PatchWorker::bsdiff_patch(char *patchFile, char *oldFile, char *newFile)
 
         return 1;
     }
-    if ((dpf = fopen(patchFile, "r")) == NULL)
+    if ((dpf = fopen(patchFile, "rb")) == NULL)
     {
         QLOG_ERROR() << "Unable to open patch file with bzip2 /2";
 
@@ -194,7 +185,7 @@ int PatchWorker::bsdiff_patch(char *patchFile, char *oldFile, char *newFile)
 
         return 1;
     }
-    if ((epf = fopen(patchFile, "r")) == NULL)
+    if ((epf = fopen(patchFile, "rb")) == NULL)
     {
         QLOG_ERROR() << "Unable to open patch file with bzip2 /3";
 
@@ -213,7 +204,7 @@ int PatchWorker::bsdiff_patch(char *patchFile, char *oldFile, char *newFile)
         return 1;
     }
 
-    if(((fd=open(oldFile,O_RDONLY,0))<0) || ((oldsize=lseek(fd,0,SEEK_END))==-1) || ((old=(u_char*)malloc(oldsize+1))==NULL) ||
+    if(((fd=open(oldFile,OPEN_ARGS,0))<0) || ((oldsize=lseek(fd,0,SEEK_END))==-1) || ((old=(u_char*)malloc(oldsize+1))==NULL) ||
             (lseek(fd,0,SEEK_SET)!=0) || (read(fd,old,oldsize)!=oldsize) || (close(fd)==-1))
     {
         QLOG_ERROR() << "Unable to open the old file";
@@ -309,7 +300,7 @@ int PatchWorker::bsdiff_patch(char *patchFile, char *oldFile, char *newFile)
     }
 
     /* Write the new file */
-    if(((fd=open(newFile,O_CREAT|O_TRUNC|O_WRONLY,0666))<0) || (write(fd,new_,newsize)!=newsize) || (close(fd)==-1))
+    if(((fd=open(newFile,WRITE_ARGS,0666))<0) || (write(fd,new_,newsize)!=newsize) || (close(fd)==-1))
     {
         QLOG_ERROR() << "Error writing patched file";
 
