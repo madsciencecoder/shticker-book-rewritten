@@ -55,7 +55,7 @@ LauncherWindow::LauncherWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui
     connect(updateThread, SIGNAL(started()), updateWorker, SLOT(startUpdating()));
     connect(updateWorker, SIGNAL(updateComplete()), updateThread, SLOT(quit()));
     connect(updateWorker, SIGNAL(updateComplete()), updateWorker, SLOT(deleteLater()));
-    connect(updateWorker, SIGNAL(updateComplete()), updateThread, SLOT(deleteLater()));
+    connect(updateWorker, SIGNAL(destroyed(QObject*)), updateThread, SLOT(deleteLater()));
 
     //allow the update worker to communicate with the main window
     connect(updateWorker, SIGNAL(sendMessage(QString)), this, SLOT(relayMessage(QString)));
