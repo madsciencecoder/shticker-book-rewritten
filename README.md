@@ -39,8 +39,10 @@ TODO: add dependency packages and link to AUR PKGBUILD
 
 #### Windows
 
-It should be possible to compile this for Windows.  Qt is very cross platform and all libraries used should compile on Windows.  That being said I have not yet compiled it and have little interest in doing so.  If someone would like help getting it compiled feel free to ask if you run into difficulties.  If there is enough interest on porting it to Windows I might look into it more.  Most, if not all, of the differences Windows would need in the code are already programmed to replace Linux specific code.
+As of commit 2f31c14 it should now compile and run just fine on Windows.  Windows is still not being officially supported so while future commits will likely not break compatibility they will not be tested on Windows.
+
+The easiest way to compile this on Windows is to download Qt from their website (https://www.qt.io/download-open-source/) and install with at least Qt 5.5 and MinGW.  You will need to manually supply a built bzip2 library for Qt to use.  You can get a pre-compiled one from http://sourceforge.net/projects/mingw/files/MinGW/Extension/bzip2/bzip2-1.0.6-4/.  You will need both the dev and dll-2 downloads.  Then copy the files to the Qt folders containing the build libraries.  Qt does not provide any DLLs for openssl either which is necessary since the program uses HTTPS for the login.  You can get some pre compiled ones from http://slproweb.com/products/Win32OpenSSL.html.  To make handling DLLs easier you may wish to also add the Qt bin directory to your Windows PATH environment variable.
 
 #### Mac OS X
 
-Same as Windows, there is no reason it shouldn't compile.  I do not own a Mac or have access to one, however, so I can't really help too much in that regard.  Most of the differences OS X would need in the code are already programmed to replace Linux specific code, however the paths and file names likely would need tweaking in globaldefines.h. 
+Theoretically it may work.  I do not own a Mac or have access to one, however, so I can't really help too much in that regard.  Most of the differences OS X would need in the code are already programmed to replace Linux specific code, however the paths and file names likely would need tweaking in globaldefines.h. 
