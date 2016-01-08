@@ -94,6 +94,7 @@ void UpdateWorker::patchManifestReady(QJsonDocument patchManifest)
                     if(fileHash == fileObject["hash"].toString())
                     {
                         QLOG_DEBUG() << "Hash matches patch manifest, skipping update\n";
+                        fileIsOld = false;
                     }
                     else
                     {
@@ -262,6 +263,7 @@ void UpdateWorker::getNewFile(QString dlFile, QString localBz2FileName, QString 
     }
 
     //extract the file
+    emit sendMessage(QString("Extracting " + dlFile));
     ExtractionWorker *extractionWorker = new ExtractionWorker(this);
 
     extractionWorker->extractBz2(localBz2FileName, localFileName);
