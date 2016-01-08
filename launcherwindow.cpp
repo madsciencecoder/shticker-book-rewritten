@@ -94,10 +94,6 @@ void LauncherWindow::relayHideProgressBar()
 
 void LauncherWindow::loginReady()
 {
-    //clear the username and password boxes to prevent accidental relaunching of the game and to be ready to launch another
-    ui->usernameBox->clear();
-    ui->passwordBox->clear();
-
     emit enableLogin(true);
     loginIsReady = true;
 }
@@ -119,7 +115,7 @@ void LauncherWindow::initiateLogin()
         connect(loginWorker, SIGNAL(gameFinished()), this, SLOT(gameHasFinished()));
         connect(loginWorker, SIGNAL(authenticationFailed()), this, SLOT(authenticationFailed()));
 
-        //start the game and get the PID
+        //start login and then the game
         loginWorker->initiateLogin(ui->usernameBox->text(), ui->passwordBox->text());
     }
     else
@@ -130,6 +126,10 @@ void LauncherWindow::initiateLogin()
 
 void LauncherWindow::gameHasStarted()
 {
+    //clear the username and password boxes to prevent accidental relaunching of the game and to be ready to launch another
+    ui->usernameBox->clear();
+    ui->passwordBox->clear();
+
     //increment to show how many instances are running
     gameInstances++;
 
