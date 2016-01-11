@@ -144,6 +144,10 @@ void UpdateWorker::patchManifestReady(QJsonDocument patchManifest)
                                 {
                                     QLOG_ERROR() << "Downloaded file fails integrity check, looping again to check for patches.  This is try" << i << "of 5";
                                 }
+
+                                //delete the patch files
+                                QFile::remove(patchFileName);
+                                QFile::remove(extractedFileName);
                             }
                         }
                         //check if it was patched and if not no patch is available but still out of date so try to get a new copy
@@ -165,6 +169,8 @@ void UpdateWorker::patchManifestReady(QJsonDocument patchManifest)
                                 QLOG_ERROR() << "Downloaded file fails integrity check, looping again to check for patches.  This is try" << i << "of 5";
                             }
                         }
+                        //delete the zipped file
+                        QFile::remove(localBz2FileName);
                     }
                 }
                 else
@@ -183,6 +189,9 @@ void UpdateWorker::patchManifestReady(QJsonDocument patchManifest)
                     {
                         QLOG_ERROR() << "Downloaded file fails integrity check, looping again to check for patches.  This is try" << i << "of 5";
                     }
+
+                    //delete the zipped file
+                    QFile::remove(localBz2FileName);
                 }
             }
         }

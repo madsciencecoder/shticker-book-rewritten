@@ -48,7 +48,6 @@
  */
 
 #include "patchworker.h"
-#include "hashworker.h"
 #include "libraries/qslog/QsLog.h"
 
 #include <QFile>
