@@ -110,7 +110,7 @@
              <bool>false</bool>
             </property>
             <property name="styleSheet">
-             <string notr="true">background-image:url(:/resources/TTR_Logo.svg);background-repeat:no-repeat;</string>
+             <string notr="true">background-image:url(:/resources/TTR_Logo.png);background-repeat:no-repeat;</string>
             </property>
            </widget>
           </item>
