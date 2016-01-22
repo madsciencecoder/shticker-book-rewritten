@@ -48,7 +48,10 @@ LauncherWindow::LauncherWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui
 
     //allow QWebView to store data locally and create a cache for faster loading
     QWebSettings::globalSettings()->setAttribute(QWebSettings::LocalStorageEnabled, true);
+    QWebSettings::globalSettings()->setAttribute(QWebSettings::NotificationsEnabled, true);
     QWebSettings::globalSettings()->setLocalStoragePath(CACHE_DIR);
+    //enable desktop notifications
+    connect(ui->invasionsWebview->page(), SIGNAL(featurePermissionRequested(QWebFrame*,QWebPage::Feature)), this, SLOT(notificationsRequested(QWebFrame*,QWebPage::Feature)));
 
     QLOG_DEBUG() << "Webview cache is being stored at: " << CACHE_DIR << endl;
 
@@ -191,5 +194,13 @@ void LauncherWindow::closeEvent(QCloseEvent *event)
     else
     {
         close();
+    }
+}
+
+void LauncherWindow::notificationsRequested(QWebFrame *frame, QWebPage::Feature feature)
+{
+    if(feature == QWebPage::Notifications)
+    {
+        ui->invasionsWebview->page()->setFeaturePermission(frame, feature, QWebPage::PermissionGrantedByUser);
     }
 }
