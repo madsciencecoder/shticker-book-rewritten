@@ -193,7 +193,7 @@ void LauncherWindow::closeEvent(QCloseEvent *event)
     //no running instances so we can just close
     else
     {
-        close();
+        exit(0);
     }
 }
 
