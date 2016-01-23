@@ -182,7 +182,7 @@ void LauncherWindow::closeEvent(QCloseEvent *event)
 
         if( dialog == QMessageBox::Yes)
         {
-            close();
+            exit(0);
         }
         else
         {
