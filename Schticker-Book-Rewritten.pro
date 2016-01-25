@@ -25,7 +25,7 @@ QT       += core gui webkitwidgets network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = Shticker_Book_Rewritten
+TARGET = shticker-book-rewritten
 TEMPLATE = app
 
 
@@ -60,3 +60,21 @@ RESOURCES += \
 LIBS += -lbz2
 
 include(libraries/qslog/QsLog.pri)
+
+DISTFILES += LICENSE
+unix:!mac {
+    isEmpty(PREFIX):PREFIX = /usr
+    BINDIR = $$PREFIX/bin
+    INSTALLS += target
+    target.path = $$BINDIR
+    DATADIR = $$PREFIX/share
+    PKGDATADIR = $$DATADIR/shticker-book-rewritten
+    DEFINES += DATADIR=\\\"$$DATADIR\\\" \
+        PKGDATADIR=\\\"$$PKGDATADIR\\\"
+    INSTALLS += desktop \
+        icon
+    desktop.path = $$DATADIR/applications
+    desktop.files += shticker-book-rewritten.desktop
+    icon.path = $$DATADIR/shticker-book-rewritten/icon
+    icon.files += resources/shticker-book-rewritten.png
+}
