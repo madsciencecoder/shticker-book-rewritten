@@ -26,8 +26,6 @@
 #include <QObject>
 #include <QMainWindow>
 #include <QStringList>
-#include <QWebFrame>
-#include <QWebPage>
 
 namespace Ui {
 class LauncherWindow;
@@ -51,7 +49,7 @@ public slots:
     void gameHasStarted();
     void gameHasFinished();
     void authenticationFailed();
-    void notificationsRequested(QWebFrame*,QWebPage::Feature);
+    void newsViewLoaded();
 
 signals:
     void sendMessage(QString);
