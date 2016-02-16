@@ -36,7 +36,7 @@ void JsonWorker::startRequest(QUrl url)
 {
     QLOG_DEBUG() << "Downloading file:" << url.url();
 
-    networkManager = new QNetworkAccessManager();           //Network manager to handle downloading the JSON document
+    networkManager = new QNetworkAccessManager(this);           //Network manager to handle downloading the JSON document
 
     reply = networkManager->get(QNetworkRequest(url));
     connect(reply, SIGNAL(finished()), this, SLOT(requestFinished()));

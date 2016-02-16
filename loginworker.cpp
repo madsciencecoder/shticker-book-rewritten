@@ -30,7 +30,7 @@
 
 LoginWorker::LoginWorker(QObject *parent) : QObject(parent)
 {
-    timer = new QTimer();
+    timer = new QTimer(this);
     timer->setSingleShot(true);
     connect(timer, SIGNAL(timeout()), this, SLOT(timerFinished()));
 }

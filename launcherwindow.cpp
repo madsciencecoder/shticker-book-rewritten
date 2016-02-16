@@ -60,8 +60,8 @@ LauncherWindow::LauncherWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui
     loginIsReady = false;
 
     //Begin updating the game files
-    updateThread = new QThread;
-    UpdateWorker *updateWorker = new UpdateWorker();
+    updateThread = new QThread(this);
+    UpdateWorker *updateWorker = new UpdateWorker(this);
     //make a new thread for the updating process since it can bog down the main thread and make the window unresponsive
     updateWorker->moveToThread(updateThread);
 
