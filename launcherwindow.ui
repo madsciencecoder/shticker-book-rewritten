@@ -238,7 +238,7 @@
          <number>0</number>
         </property>
         <item row="0" column="0">
-         <widget class="QWebEngineView" name="invasionsWebview" native="true"/>
+         <widget class="InvasionTracker" name="invasionsView" native="true"/>
         </item>
        </layout>
       </widget>
@@ -347,6 +347,12 @@ p, li { white-space: pre-wrap; }
    <class>QWebEngineView</class>
    <extends>QWidget</extends>
    <header>qwebengineview.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>InvasionTracker</class>
+   <extends>QWidget</extends>
+   <header>invasiontracker.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

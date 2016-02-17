@@ -38,7 +38,8 @@ SOURCES += main.cpp\
     loginworker.cpp \
     twofactorwindow.cpp \
     patchworker.cpp \
-    hashworker.cpp
+    hashworker.cpp \
+    invasiontracker.cpp
 
 HEADERS  += launcherwindow.h \
     globaldefines.h \
@@ -49,7 +50,8 @@ HEADERS  += launcherwindow.h \
     loginworker.h \
     twofactorwindow.h \
     patchworker.h \
-    hashworker.h
+    hashworker.h \
+    invasiontracker.h
 
 FORMS    += launcherwindow.ui \
     twofactorwindow.ui
