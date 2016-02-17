@@ -62,7 +62,7 @@ void InvasionTracker::jsonDocumentReceived(QJsonDocument invasionsDocument)
 
 InvasionBlock::InvasionBlock(QWidget *parent, QString district, QString cog, QString progress) : QWidget(parent)
 {
-    //fix for glitch with Micromanager name being "Micro\u0003manager"
+    //fix for glitch with cog names containing "\u0003"
     if(cog == "Micro\u0003manager")
     {
         cog = "Micromanager";
@@ -70,6 +70,10 @@ InvasionBlock::InvasionBlock(QWidget *parent, QString district, QString cog, QSt
     else if(cog == "Blood\u0003sucker")
     {
         cog = "Bloodsucker";
+    }
+    else if(cog == "Tele\u0003marketer")
+    {
+        cog = "Telemarketer";
     }
 
     QGridLayout *layout = new QGridLayout(this);
