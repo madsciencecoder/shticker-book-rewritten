@@ -3,7 +3,6 @@
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QTimer>
-#include <QLayout>
 #include <QLabel>
 
 InvasionTracker::InvasionTracker(QWidget *parent) : QWidget(parent)
@@ -42,15 +41,17 @@ void InvasionTracker::jsonDocumentReceived(QJsonDocument invasionsDocument)
         QJsonObject invasionsObject = apiObject["invasions"].toObject();
         QStringList districtsList = invasionsObject.keys();
         QString districtName;
+        int count = 0;
 
         foreach(districtName, districtsList)
         {
             QJsonObject districtInvasion = invasionsObject[districtName].toObject();
             InvasionBlock *invasionBlock = new InvasionBlock(this, districtName, districtInvasion["type"].toString(), districtInvasion["progress"].toString());
-            layout->addWidget(invasionBlock);
+            layout->addWidget(invasionBlock, count / 3, count % 3, Qt::AlignCenter);
             invasionBlock->show();
 
             connect(this, SIGNAL(clear()), invasionBlock, SLOT(deleteLater()));
+            count++;
         }
     }
     else
@@ -71,7 +72,7 @@ InvasionBlock::InvasionBlock(QWidget *parent, QString district, QString cog, QSt
         cog = "Bloodsucker";
     }
 
-    QLayout *layout = new QGridLayout(this);
+    QGridLayout *layout = new QGridLayout(this);
     layout->setSizeConstraint(QLayout::SetFixedSize);
     layout->setAlignment(Qt::AlignLeft);
     this->setLayout(layout);
@@ -86,5 +87,5 @@ InvasionBlock::InvasionBlock(QWidget *parent, QString district, QString cog, QSt
 
     districtLabel->setText(district);
     cogLabel->setText(cog);
-    progressLabel->setText(progress);
+    progressLabel->setText(progress + QString(" cogs"));
 }

@@ -3,6 +3,7 @@
 
 #include "jsonworker.h"
 #include <QWidget>
+#include <QGridLayout>
 
 class InvasionTracker : public QWidget
 {
@@ -22,7 +23,7 @@ private slots:
 private:
     QTimer *timer;
     JsonWorker *jsonWorker;
-    QLayout *layout;
+    QGridLayout *layout;
 };
 
 class InvasionsView : public QWidget
