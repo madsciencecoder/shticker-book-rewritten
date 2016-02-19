@@ -55,10 +55,40 @@ void InvasionTracker::jsonDocumentReceived(QJsonDocument invasionsDocument)
             InvasionBlock *invasionBlock = new InvasionBlock(this, districtName, districtInvasion["type"].toString(), districtInvasion["progress"].toString());
             layout->addWidget(invasionBlock, count / 3, count % 3, Qt::AlignCenter);
             invasionBlock->show();
+            currentInvasions.append(districtName + QString("/") + districtInvasion["type"].toString());
 
             connect(this, SIGNAL(clear()), invasionBlock, SLOT(deleteLater()));
+
+            //check if this invasion is new
+            if(notifyBox->isChecked())
+            {
+                if(!previousInvasions.contains(districtName + QString("/") + districtInvasion["type"].toString()))
+                {
+                    //new invasion, show notification
+                    invasionStarted(districtName, districtInvasion["type"].toString(), districtInvasion["progress"].toString());
+                }
+            }
+
             count++;
         }
+
+        //check for any invasions that have ended
+        if(notifyBox->isChecked())
+        {
+            QString invasion;
+
+            foreach(invasion, previousInvasions)
+            {
+                if(!currentInvasions.contains(invasion))
+                {
+                    //invasion has ended
+                    invasionEnded(invasion);
+                }
+            }
+        }
+
+        previousInvasions = currentInvasions;
+        currentInvasions.clear();
     }
     else
     {
@@ -77,6 +107,22 @@ void InvasionTracker::checkboxChanged(bool isChecked)
     {
         trayIcon->deleteLater();
     }
+}
+
+void InvasionTracker::invasionStarted(QString district, QString cog, QString progress)
+{
+    //separate the cog progress to get the total number
+    QStringList list = progress.split('/', QString::SkipEmptyParts, Qt::CaseSensitive);
+
+    trayIcon->showMessage(QString("Invasion has started!"), list[1] + QString(" ") + cog + QString("s have taken over ") + district +
+                          QString("!"));
+}
+
+void InvasionTracker::invasionEnded(QString invasion)
+{
+    QStringList list = invasion.split('/', QString::SkipEmptyParts, Qt::CaseSensitive);
+
+    trayIcon->showMessage(QString("Invasion has ended!"), QString("The ") + list[1] + QString("s have fled ") + list[0] + QString("."));
 }
 
 InvasionBlock::InvasionBlock(QWidget *parent, QString district, QString cog, QString progress) : QWidget(parent)

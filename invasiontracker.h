@@ -29,6 +29,11 @@ private:
     QGridLayout *layout;
     QCheckBox *notifyBox;
     QSystemTrayIcon *trayIcon;
+    QStringList previousInvasions;
+    QStringList currentInvasions;
+
+    void invasionStarted(QString, QString, QString);
+    void invasionEnded(QString);
 };
 
 class InvasionsView : public QWidget
