@@ -33,5 +33,7 @@
         <file>resources/invasion-icons/The Mingler.png</file>
         <file>resources/invasion-icons/Tightwad.png</file>
         <file>resources/invasion-icons/Yesman.png</file>
+        <file>resources/invasion-icons/Double Talker.png</file>
+        <file>resources/invasion-icons/Two-Face.png</file>
     </qresource>
 </RCC>
