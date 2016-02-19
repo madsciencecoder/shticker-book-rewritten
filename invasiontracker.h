@@ -4,6 +4,8 @@
 #include "jsonworker.h"
 #include <QWidget>
 #include <QGridLayout>
+#include <QCheckBox>
+#include <QSystemTrayIcon>
 
 class InvasionTracker : public QWidget
 {
@@ -19,11 +21,14 @@ public slots:
 
 private slots:
     void refresh();
+    void checkboxChanged(bool);
 
 private:
     QTimer *timer;
     JsonWorker *jsonWorker;
     QGridLayout *layout;
+    QCheckBox *notifyBox;
+    QSystemTrayIcon *trayIcon;
 };
 
 class InvasionsView : public QWidget

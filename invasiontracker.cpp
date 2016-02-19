@@ -7,6 +7,12 @@
 
 InvasionTracker::InvasionTracker(QWidget *parent) : QWidget(parent)
 {
+    //setup a checkbox for desktop notifications
+    notifyBox = new QCheckBox(this);
+    notifyBox->setText(QString("Enable Desktop Notifications"));
+    notifyBox->setFixedWidth(400);
+    connect(notifyBox, SIGNAL(toggled(bool)), this, SLOT(checkboxChanged(bool)));
+
     layout = new QGridLayout(this);
     layout->setSizeConstraint(QLayout::SetMinimumSize);
     this->setLayout(layout);
@@ -60,6 +66,19 @@ void InvasionTracker::jsonDocumentReceived(QJsonDocument invasionsDocument)
     }
 }
 
+void InvasionTracker::checkboxChanged(bool isChecked)
+{
+    if(isChecked)
+    {
+        trayIcon = new QSystemTrayIcon(QIcon(":/resources/icon.ico"), this);
+        trayIcon->show();
+    }
+    else
+    {
+        trayIcon->deleteLater();
+    }
+}
+
 InvasionBlock::InvasionBlock(QWidget *parent, QString district, QString cog, QString progress) : QWidget(parent)
 {
     //fix for glitch with cog names containing "\u0003"
@@ -85,12 +104,14 @@ InvasionBlock::InvasionBlock(QWidget *parent, QString district, QString cog, QSt
     QLabel *cogLabel = new QLabel(this);
     QLabel *progressLabel = new QLabel(this);
     QLabel *icon = new QLabel(this);
+    QLabel *remaining = new QLabel(this);
     QPixmap *iconPixmap = new QPixmap(QString(":/resources/invasion-icons/") + cog);
 
-    layout->addWidget(icon, 1, 1, 3, 1, Qt::AlignCenter);
-    layout->addWidget(districtLabel, 1, 2, Qt::AlignCenter);
-    layout->addWidget(cogLabel, 2, 2, Qt::AlignCenter);
-    layout->addWidget(progressLabel, 3, 2, Qt::AlignCenter);
+    layout->addWidget(icon, 1, 1, 4, 1, Qt::AlignCenter);
+    layout->addWidget(districtLabel, 1, 2, Qt::AlignLeft);
+    layout->addWidget(cogLabel, 2, 2, Qt::AlignLeft);
+    layout->addWidget(progressLabel, 3, 2, Qt::AlignLeft);
+    layout->addWidget(remaining, 4, 2, Qt::AlignLeft);
 
     districtLabel->setText(district);
     cogLabel->setText(cog);
