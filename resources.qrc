@@ -3,5 +3,35 @@
         <file>resources/icon.ico</file>
         <file>resources/TTR_Logo.svg</file>
         <file>resources/TTR_Logo.png</file>
+        <file>resources/invasion-icons/Ambulance Chaser.png</file>
+        <file>resources/invasion-icons/Back Stabber.png</file>
+        <file>resources/invasion-icons/Bean Counter.png</file>
+        <file>resources/invasion-icons/Big Wig.png</file>
+        <file>resources/invasion-icons/Bloodsucker.png</file>
+        <file>resources/invasion-icons/Bottom Feeder.png</file>
+        <file>resources/invasion-icons/Cold Caller.png</file>
+        <file>resources/invasion-icons/Corporate Raider.png</file>
+        <file>resources/invasion-icons/Downsizer.png</file>
+        <file>resources/invasion-icons/Flunky.png</file>
+        <file>resources/invasion-icons/Glad Hander.png</file>
+        <file>resources/invasion-icons/Head Hunter.png</file>
+        <file>resources/invasion-icons/Legal Eagle.png</file>
+        <file>resources/invasion-icons/Loan Shark.png</file>
+        <file>resources/invasion-icons/Micromanager.png</file>
+        <file>resources/invasion-icons/Money Bags.png</file>
+        <file>resources/invasion-icons/Mover &amp; Shaker.png</file>
+        <file>resources/invasion-icons/Mr. Hollywood.png</file>
+        <file>resources/invasion-icons/Name Dropper.png</file>
+        <file>resources/invasion-icons/Number Cruncher.png</file>
+        <file>resources/invasion-icons/Pencil Pusher.png</file>
+        <file>resources/invasion-icons/Penny Pincher.png</file>
+        <file>resources/invasion-icons/Robber Baron.png</file>
+        <file>resources/invasion-icons/Short Change.png</file>
+        <file>resources/invasion-icons/Spin Doctor.png</file>
+        <file>resources/invasion-icons/Telemarketer.png</file>
+        <file>resources/invasion-icons/The Big Cheese.png</file>
+        <file>resources/invasion-icons/The Mingler.png</file>
+        <file>resources/invasion-icons/Tightwad.png</file>
+        <file>resources/invasion-icons/Yesman.png</file>
     </qresource>
 </RCC>

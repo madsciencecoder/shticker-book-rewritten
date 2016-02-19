@@ -84,12 +84,17 @@ InvasionBlock::InvasionBlock(QWidget *parent, QString district, QString cog, QSt
     QLabel *districtLabel = new QLabel(this);
     QLabel *cogLabel = new QLabel(this);
     QLabel *progressLabel = new QLabel(this);
+    QLabel *icon = new QLabel(this);
+    QPixmap *iconPixmap = new QPixmap(QString(":/resources/invasion-icons/") + cog);
 
-    layout->addWidget(districtLabel);
-    layout->addWidget(cogLabel);
-    layout->addWidget(progressLabel);
+    layout->addWidget(icon, 1, 1, 3, 1, Qt::AlignCenter);
+    layout->addWidget(districtLabel, 1, 2, Qt::AlignCenter);
+    layout->addWidget(cogLabel, 2, 2, Qt::AlignCenter);
+    layout->addWidget(progressLabel, 3, 2, Qt::AlignCenter);
 
     districtLabel->setText(district);
     cogLabel->setText(cog);
     progressLabel->setText(progress + QString(" cogs"));
+    icon->setPixmap(*iconPixmap);
+    icon->setFixedSize(iconPixmap->size());
 }
