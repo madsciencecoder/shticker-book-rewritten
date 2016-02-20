@@ -227,14 +227,10 @@ void LoginWorker::startGame(QString cookie, QString gameServer)
 {
     QLOG_DEBUG() << "Starting game!\n";
 
-    //setup the paths
-    QString engineFile = FILES_PATH + ENGINE_FILENAME;
-    QString gamePath = FILES_PATH;
-
     gameProcess = new QProcess();
 
-    gameProcess->setWorkingDirectory(gamePath);
-    QDir::setCurrent(gamePath);
+    gameProcess->setWorkingDirectory(FILES_PATH);
+    QDir::setCurrent(FILES_PATH);
 
     //set the environment variables for the engine
     QProcessEnvironment gameEnvironment = QProcessEnvironment::systemEnvironment();
@@ -246,7 +242,7 @@ void LoginWorker::startGame(QString cookie, QString gameServer)
     connect(gameProcess, SIGNAL(finished(int)), this, SLOT(gameHasFinished(int)));
 
     //start the game
-    gameProcess->start(engineFile);
+    gameProcess->start(ENGINE_FILENAME);
     gameProcess->waitForStarted(30000);
 }
 
