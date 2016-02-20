@@ -2,7 +2,7 @@
 
 Custom launcher for the MMORPG Toontown Rewritten.  Named after the in game shticker book which provides access to various settings and data.  It tries to provide an all in one tool to provide useful tools to make playing easier.
 
-Currently the only supported platform is Linux.  It is designed with being cross-platform in mind but I have not yet had a chance to build it or test for Mac OS X or Windows.  If someone would like to build it for either platform it should just be a matter of changing a few defines in globaldefines.h and configuring the build environment.
+It is designed with being cross-platform in mind but I have not yet had a chance to build it or test for Mac OS X.  If someone would like to, it should just be a matter of changing a few defines in globaldefines.h and configuring the build environment.
 
 ### Windows Installer
 
