@@ -35,10 +35,9 @@ int main(int argc, char *argv[])
 
     //set logging level and file name
     logger.setLoggingLevel(QsLogging::TraceLevel);
-    const QString sLogPath = FILES_PATH + QString("log.txt");
 
     // Create log destinations
-    QsLogging::DestinationPtr fileDestination(QsLogging::DestinationFactory::MakeFileDestination(sLogPath));
+    QsLogging::DestinationPtr fileDestination(QsLogging::DestinationFactory::MakeFileDestination(LOG_FILE));
     QsLogging::DestinationPtr debugDestination(QsLogging::DestinationFactory::MakeDebugOutputDestination());
 
     // set log destinations on the logger

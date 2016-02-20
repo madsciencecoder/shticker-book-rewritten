@@ -4,6 +4,10 @@ Custom launcher for the MMORPG Toontown Rewritten.  Named after the in game shti
 
 Currently the only supported platform is Linux.  It is designed with being cross-platform in mind but I have not yet had a chance to build it or test for Mac OS X or Windows.  If someone would like to build it for either platform it should just be a matter of changing a few defines in globaldefines.h and configuring the build environment.
 
+### Windows Installer
+
+There is now an official installer for Windows.  Please check the releases page to download the most recent version.  Please note that it does not check for updates for itself yet so be sure to either keep an eye out or you can follow the repository for email updates.
+
 ### Linux Packages
 
 I have created packages through OpenSuse's OBS for the most popular distributions.  There are currently packages for OpenSuse 42.1 and Tumbleweed, Fedora 22 and 23, Debian 8, and Ubuntu 15.04 and 15.10.
@@ -71,9 +75,9 @@ TODO: add dependency packages and link to AUR PKGBUILD
 
 #### Windows
 
-As of commit 2f31c14 it should now compile and run just fine on Windows.  Windows is still not being officially supported so while future commits will likely not break compatibility they will not be tested on Windows.
+Check 
 
-The easiest way to compile this on Windows is to download Qt from their website (https://www.qt.io/download-open-source/) and install with at least Qt 5.5 and MinGW.  You will need to manually supply a built bzip2 library for Qt to use.  You can get a pre-compiled one from http://sourceforge.net/projects/mingw/files/MinGW/Extension/bzip2/bzip2-1.0.6-4/.  You will need both the dev and dll-2 downloads.  Then copy the files to the Qt folders containing the build libraries.  Qt does not provide any DLLs for openssl either which is necessary since the program uses HTTPS for the login.  You can get some pre compiled ones from http://slproweb.com/products/Win32OpenSSL.html.  To make handling DLLs easier you may wish to also add the Qt bin directory to your Windows PATH environment variable.
+The easiest way to compile this on Windows is to download Qt from their website (https://www.qt.io/download-open-source/) and install with at least Qt 5.5 and MinGW.  You will need to manually supply a built bzip2 library for Qt to use which you can download a pre-compiled one from http://sourceforge.net/projects/mingw/files/MinGW/Extension/bzip2/bzip2-1.0.6-4/.  You will need both the dev and dll-2 downloads.  Then copy the files to the Qt folders containing the build libraries.  You will also need openssl DLLs which can be downloaded from http://slproweb.com/products/Win32OpenSSL.html.  To make handling DLLs easier you may wish to add the Qt bin directory to your Windows PATH environment variable.
 
 #### Mac OS X
 

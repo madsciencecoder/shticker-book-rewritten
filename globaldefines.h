@@ -25,21 +25,27 @@
 
 //Platform Specific Configurations
 #ifdef Q_OS_LINUX
-#define FILES_PATH  QDir::homePath() + "/ToontownRewritten/"
+#define FILES_PATH  QDir::homePath() + QString("/ToontownRewritten/")
 #define PLATFORM    "linux2"
-#define ENGINE_FILENAME "TTREngine"
+#define ENGINE_FILENAME FILES_PATH + QString("TTREngine")
+#define CACHE_DIR   FILES_PATH + QString("cache/")
+#define LOG_FILE    FILES_PATH + QString("log.txt")
 
 //for windows support (should now work)
 #elif defined(Q_OS_WIN)
-#define FILES_PATH  ""
+#define FILES_PATH  QDir::currentPath() + QString("/../")
 #define ENGINE_FILENAME QString("TTREngine.exe")
 #define PLATFORM    "win32"
+#define CACHE_DIR   QString("cache/")
+#define LOG_FILE    QString("log.txt")
 
 //For OS X support (not used because no mac to compile and test on)
 #elif defined(Q_OS_MAC)
 #define FILES_PATH  ""
 #define ENGINE_FILENAME ""
 #define PLATFORM    "darwin"
+#define CACHE_DIR   FILES_PATH + QString("cache/")
+#define LOG_FILE    FILES_PATH + QString("log.txt")
 
 #else
 #error "Unsupported platform."
@@ -50,6 +56,3 @@
 
 //content distribution URL
 #define CDN_URL "https://cdn.toontownrewritten.com/content/"
-
-//cache directory for web apps and temporary downloads of updated files
-#define CACHE_DIR   FILES_PATH + QString("cache/")
