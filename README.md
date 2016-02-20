@@ -75,8 +75,6 @@ TODO: add dependency packages and link to AUR PKGBUILD
 
 #### Windows
 
-Check 
-
 The easiest way to compile this on Windows is to download Qt from their website (https://www.qt.io/download-open-source/) and install with at least Qt 5.5 and MinGW.  You will need to manually supply a built bzip2 library for Qt to use which you can download a pre-compiled one from http://sourceforge.net/projects/mingw/files/MinGW/Extension/bzip2/bzip2-1.0.6-4/.  You will need both the dev and dll-2 downloads.  Then copy the files to the Qt folders containing the build libraries.  You will also need openssl DLLs which can be downloaded from http://slproweb.com/products/Win32OpenSSL.html.  To make handling DLLs easier you may wish to add the Qt bin directory to your Windows PATH environment variable.
 
 #### Mac OS X
