@@ -10,7 +10,7 @@ There is now an official installer for Windows.  Please check the releases page 
 
 ### Linux Packages
 
-I have created packages through OpenSuse's OBS for the most popular distributions.  There are currently packages for OpenSuse 42.1 and Tumbleweed, Fedora 22 and 23, Debian 8, and Ubuntu 15.04 and 15.10.
+I have created packages through OpenSuse's OBS for the most popular distributions.  There are currently packages for OpenSuse 42.1 and Tumbleweed, Fedora 22 and 23, Debian 8, and Ubuntu 15.04, 15.10, and 16.04 LTS.
 
 You can get the packages at https://software.opensuse.org/download.html?project=home%3Amadsciencecoder%3Ashticker-book-rewritten&package=shticker-book-rewritten.  Just click your distribution and follow the instructions for your version.
 
@@ -28,6 +28,7 @@ You can get the packages at https://software.opensuse.org/download.html?project=
 
 * Standalone invasion tracker.  More features can be added to the tracker and there is no need to rely on ToonHQ like it is necessary for the groups due to lack of an API.  The notifications also don't work 100% with QWebKit.
 * Content pack installer.  Currently you must manually place the content pack inside a folder called `resources` in the game's folder.  For Linux this is ToontownRewritten inside the user's home folder.
+* Self updating to new versions of the launcher (Windows only since Linux has good package management already)
 
 ### How to Compile
 
