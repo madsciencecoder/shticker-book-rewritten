@@ -71,6 +71,9 @@
         <property name="bottomMargin">
          <number>0</number>
         </property>
+        <item row="0" column="0">
+         <widget class="QWebEngineView" name="newsWebview" native="true"/>
+        </item>
         <item row="0" column="1" colspan="2">
          <layout class="QGridLayout" name="launcherLayout">
           <property name="sizeConstraint">
@@ -187,36 +190,6 @@
           </item>
          </layout>
         </item>
-        <item row="0" column="0">
-         <widget class="QWebView" name="newsWebview">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="baseSize">
-           <size>
-            <width>0</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="contextMenuPolicy">
-           <enum>Qt::DefaultContextMenu</enum>
-          </property>
-          <property name="acceptDrops">
-           <bool>false</bool>
-          </property>
-          <property name="styleSheet">
-           <string notr="true">background-color:#141618;</string>
-          </property>
-          <property name="url">
-           <url>
-            <string>https://www.toontownrewritten.com/news/launcher</string>
-           </url>
-          </property>
-         </widget>
-        </item>
        </layout>
       </widget>
       <widget class="QWidget" name="groupTab">
@@ -240,22 +213,7 @@
          <number>0</number>
         </property>
         <item row="0" column="0">
-         <widget class="QWebView" name="groupsWebview">
-          <property name="enabled">
-           <bool>true</bool>
-          </property>
-          <property name="acceptDrops">
-           <bool>false</bool>
-          </property>
-          <property name="url">
-           <url>
-            <string>http://toonhq.org/groups/</string>
-           </url>
-          </property>
-          <property name="zoomFactor">
-           <double>1.000000000000000</double>
-          </property>
-         </widget>
+         <widget class="QWebEngineView" name="groupsWebview" native="true"/>
         </item>
        </layout>
       </widget>
@@ -280,19 +238,7 @@
          <number>0</number>
         </property>
         <item row="0" column="0">
-         <widget class="QWebView" name="invasionsWebview">
-          <property name="acceptDrops">
-           <bool>false</bool>
-          </property>
-          <property name="url">
-           <url>
-            <string>http://toonhq.org/invasions/</string>
-           </url>
-          </property>
-          <property name="zoomFactor">
-           <double>1.000000000000000</double>
-          </property>
-         </widget>
+         <widget class="QWebEngineView" name="invasionsWebview" native="true"/>
         </item>
        </layout>
       </widget>
@@ -317,25 +263,7 @@
          <number>0</number>
         </property>
         <item row="0" column="0">
-         <widget class="QWebView" name="fishWebview">
-          <property name="acceptDrops">
-           <bool>false</bool>
-          </property>
-          <property name="autoFillBackground">
-           <bool>false</bool>
-          </property>
-          <property name="styleSheet">
-           <string notr="true"/>
-          </property>
-          <property name="url">
-           <url>
-            <string>http://siggen.toontown-click.de/fishadvisor/en/fishes.html</string>
-           </url>
-          </property>
-          <property name="zoomFactor">
-           <double>0.800000011920929</double>
-          </property>
-         </widget>
+         <widget class="QWebEngineView" name="fishWebview" native="true"/>
         </item>
        </layout>
       </widget>
@@ -416,9 +344,10 @@ p, li { white-space: pre-wrap; }
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>QWebView</class>
+   <class>QWebEngineView</class>
    <extends>QWidget</extends>
-   <header>QtWebKitWidgets/QWebView</header>
+   <header>qwebengineview.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources>

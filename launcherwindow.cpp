@@ -46,14 +46,14 @@ LauncherWindow::LauncherWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui
         QDir().mkdir(CACHE_DIR);
     }
 
-    //allow QWebView to store data locally and create a cache for faster loading
-    QWebSettings::globalSettings()->setAttribute(QWebSettings::LocalStorageEnabled, true);
-    QWebSettings::globalSettings()->setAttribute(QWebSettings::NotificationsEnabled, true);
-    QWebSettings::globalSettings()->setLocalStoragePath(CACHE_DIR);
-    //enable desktop notifications
-    connect(ui->invasionsWebview->page(), SIGNAL(featurePermissionRequested(QWebFrame*,QWebPage::Feature)), this, SLOT(notificationsRequested(QWebFrame*,QWebPage::Feature)));
+    //setup the webviews
+    ui->newsWebview->setUrl(QUrl("https://www.toontownrewritten.com/news/launcher"));
+    ui->fishWebview->setUrl(QUrl("http://siggen.toontown-click.de/fishadvisor/en/fishes.html"));
+    ui->invasionsWebview->setUrl(QUrl("http://toonhq.org/invasions/"));
+    ui->groupsWebview->setUrl(QUrl("http://toonhq.org/groups/"));
 
-    QLOG_DEBUG() << "Webview cache is being stored at: " << CACHE_DIR << endl;
+    //change news view to a dark background since text is white
+    connect(ui->newsWebview->page(), SIGNAL(loadFinished(bool)), this, SLOT(newsViewLoaded()));
 
     //disable login until files are updated
     emit enableLogin(false);
@@ -197,10 +197,7 @@ void LauncherWindow::closeEvent(QCloseEvent *event)
     }
 }
 
-void LauncherWindow::notificationsRequested(QWebFrame *frame, QWebPage::Feature feature)
+void LauncherWindow::newsViewLoaded()
 {
-    if(feature == QWebPage::Notifications)
-    {
-        ui->invasionsWebview->page()->setFeaturePermission(frame, feature, QWebPage::PermissionGrantedByUser);
-    }
+    ui->newsWebview->page()->runJavaScript(QString("document.body.style.backgroundColor = \"#141618\";"));
 }
