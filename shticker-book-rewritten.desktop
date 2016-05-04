@@ -1,7 +1,7 @@
 [Desktop Entry]
 Type=Application
 Name=Shticker Book Rewritten
-Icon=/usr/share/shticker-book-rewritten/icon/shticker-book-rewritten.png
+Icon=shticker-book-rewritten
 Exec=shticker-book-rewritten
 Terminal=false
 Categories=Game;RolePlaying;

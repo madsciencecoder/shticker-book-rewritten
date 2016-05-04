@@ -72,9 +72,18 @@ unix:!mac {
     DEFINES += DATADIR=\\\"$$DATADIR\\\" \
         PKGDATADIR=\\\"$$PKGDATADIR\\\"
     INSTALLS += desktop \
-        icon
+        icon32 \
+        icon64 \
+        icon128 \
+        icon256
     desktop.path = $$DATADIR/applications
     desktop.files += shticker-book-rewritten.desktop
-    icon.path = $$DATADIR/shticker-book-rewritten/icon
-    icon.files += resources/shticker-book-rewritten.png
+    icon32.path = $$DATADIR/icons/hicolor/32x32/apps
+    icon32.files += resources/32x32/shticker-book-rewritten.png
+    icon64.path = $$DATADIR/icons/hicolor/64x64/apps
+    icon64.files += resources/64x64/shticker-book-rewritten.png
+    icon128.path = $$DATADIR/icons/hicolor/128x128/apps
+    icon128.files += resources/128x128/shticker-book-rewritten.png
+    icon256.path = $$DATADIR/icons/hicolor/256x256/apps
+    icon256.files += resources/256x256/shticker-book-rewritten.png
 }
