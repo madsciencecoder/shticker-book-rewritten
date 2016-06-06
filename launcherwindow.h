@@ -65,6 +65,9 @@ private:
     int gameInstances;
     QThread *updateThread;
 
+    void readSettings();
+    void writeSettings();
+
 protected:
     void closeEvent(QCloseEvent *event);
 };

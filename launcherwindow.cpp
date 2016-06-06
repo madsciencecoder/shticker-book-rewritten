@@ -29,12 +29,16 @@
 #include <QCloseEvent>
 #include <QProcess>
 #include <QThread>
+#include <QSettings>
 
 LauncherWindow::LauncherWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::LauncherWindow)
 {
     gameInstances = 0;
 
     ui->setupUi(this);
+
+    //read the previous settings
+    readSettings();
 
     //check to make sure the cache directory exists and make it if it doesn't
     if(!QDir(FILES_PATH).exists())
@@ -182,6 +186,8 @@ void LauncherWindow::closeEvent(QCloseEvent *event)
 
         if( dialog == QMessageBox::Yes)
         {
+            //save the current settings before quitting
+            writeSettings();
             exit(0);
         }
         else
@@ -193,6 +199,9 @@ void LauncherWindow::closeEvent(QCloseEvent *event)
     //no running instances so we can just close
     else
     {
+        //save the current settings before quitting
+        writeSettings();
+
         exit(0);
     }
 }
@@ -200,4 +209,24 @@ void LauncherWindow::closeEvent(QCloseEvent *event)
 void LauncherWindow::newsViewLoaded()
 {
     ui->newsWebview->page()->runJavaScript(QString("document.body.style.backgroundColor = \"#141618\";"));
+}
+
+void LauncherWindow::writeSettings()
+{
+    QSettings settings("Shticker-Book-Rewritten", "Shticker-Book-Rewritten");
+
+    settings.beginGroup("LauncherWindow");
+    settings.setValue("size", size());
+    settings.setValue("pos", pos());
+    settings.endGroup();
+}
+
+void LauncherWindow::readSettings()
+{
+    QSettings settings("Shticker-Book-Rewritten", "Shticker-Book-Rewritten");
+
+    settings.beginGroup("LauncherWindow");
+    resize(settings.value("size", QSize(400, 400)).toSize());
+    move(settings.value("pos", QPoint(200, 200)).toPoint());
+    settings.endGroup();
 }
