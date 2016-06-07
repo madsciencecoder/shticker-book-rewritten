@@ -40,6 +40,10 @@ LauncherWindow::LauncherWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui
     //read the previous settings
     readSettings();
 
+    //setup saved toons
+    updateSavedToons();
+    connect(ui->savedToonsBox, SIGNAL(currentIndexChanged(QString)), this, SLOT(fillCredentials(QString)));
+
     //check to make sure the cache directory exists and make it if it doesn't
     if(!QDir(FILES_PATH).exists())
     {
@@ -143,9 +147,34 @@ void LauncherWindow::initiateLogin()
 
 void LauncherWindow::gameHasStarted()
 {
+    //check whether to save the credentials or not
+    if(ui->saveCredentialsBox->isChecked())
+    {
+        //check to see if it already exists
+        if(savedUsers.contains(ui->usernameBox->text()))
+        {
+            int i;
+            i = savedUsers.indexOf(ui->usernameBox->text());
+
+            //replace the password for this username
+            savedPasses.replace(i, ui->passwordBox->text());
+        }
+        else
+        {
+            savedUsers.append(ui->usernameBox->text());
+            savedPasses.append(ui->passwordBox->text());
+        }
+
+        //uncheck the box now
+        ui->saveCredentialsBox->setChecked(false);
+
+        updateSavedToons();
+    }
+
     //clear the username and password boxes to prevent accidental relaunching of the game and to be ready to launch another
     ui->usernameBox->clear();
     ui->passwordBox->clear();
+    ui->savedToonsBox->setCurrentIndex(0);
 
     //increment to show how many instances are running
     gameInstances++;
@@ -219,6 +248,11 @@ void LauncherWindow::writeSettings()
     settings.setValue("size", size());
     settings.setValue("pos", pos());
     settings.endGroup();
+
+    settings.beginGroup("Logins");
+    settings.setValue("username", savedUsers);
+    settings.setValue("pass", savedPasses);
+    settings.endGroup();
 }
 
 void LauncherWindow::readSettings()
@@ -229,4 +263,38 @@ void LauncherWindow::readSettings()
     resize(settings.value("size", QSize(400, 400)).toSize());
     move(settings.value("pos", QPoint(200, 200)).toPoint());
     settings.endGroup();
+
+    settings.beginGroup("Logins");
+    savedUsers = settings.value("username").toStringList();
+    savedPasses = settings.value("pass").toStringList();
+    settings.endGroup();
+}
+
+void LauncherWindow::updateSavedToons()
+{
+    //clear the old menus
+    ui->savedToonsBox->clear();
+
+    ui->savedToonsBox->addItem("Saved logins");
+    ui->savedToonsBox->addItems(savedUsers);
+}
+
+void LauncherWindow::fillCredentials(QString username)
+{
+    if(username == "Saved logins")
+    {
+        ui->usernameBox->clear();
+        ui->passwordBox->clear();
+        return;
+    }
+
+    else
+    {
+        int i;
+        i = savedUsers.indexOf(username);
+
+        ui->usernameBox->setText(username);
+        ui->passwordBox->setText(savedPasses.at(i));
+    }
+
 }

@@ -50,6 +50,7 @@ public slots:
     void gameHasFinished();
     void authenticationFailed();
     void newsViewLoaded();
+    void fillCredentials(QString);
 
 signals:
     void sendMessage(QString);
@@ -64,9 +65,12 @@ private:
     LoginWorker *loginWorker;
     int gameInstances;
     QThread *updateThread;
+    QStringList savedUsers;
+    QStringList savedPasses;
 
     void readSettings();
     void writeSettings();
+    void updateSavedToons();
 
 protected:
     void closeEvent(QCloseEvent *event);
