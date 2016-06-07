@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>800</width>
-    <height>405</height>
+    <height>413</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -364,6 +364,15 @@ p, li { white-space: pre-wrap; }
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>savedToonsBox</tabstop>
+  <tabstop>usernameBox</tabstop>
+  <tabstop>passwordBox</tabstop>
+  <tabstop>saveCredentialsBox</tabstop>
+  <tabstop>goButton</tabstop>
+  <tabstop>webviewTabWidget</tabstop>
+  <tabstop>textEdit</tabstop>
+ </tabstops>
  <resources>
   <include location="resources.qrc"/>
  </resources>
