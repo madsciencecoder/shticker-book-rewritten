@@ -53,7 +53,7 @@ sudo make install
 
 ##### OpenSuse
 
-Required dependency packages: `libbz2-devel libQt5WebKitWidgets-devel`
+Required dependency packages: `libbz2-devel libqt5-qtwebengine-devel`
 
 To build and install:
 ```
