@@ -4,6 +4,16 @@ Custom launcher for the MMORPG Toontown Rewritten.  Named after the in game shti
 
 It is designed with being cross-platform in mind but I have not yet had a chance to build it or test for Mac OS X.  If someone would like to, it should just be a matter of changing a few defines in globaldefines.h and configuring the build environment.
 
+### Screenshots
+
+Colors and theme may be different depending on the user's platform and Qt theme.
+
+![](https://raw.githubusercontent.com/madsciencecoder/Shticker-Book-Rewritten/master/pictures/launcher-tab.png)
+![](https://raw.githubusercontent.com/madsciencecoder/Shticker-Book-Rewritten/master/pictures/groups-tab.png)
+![](https://raw.githubusercontent.com/madsciencecoder/Shticker-Book-Rewritten/master/pictures/invasions-tab.png)
+![](https://raw.githubusercontent.com/madsciencecoder/Shticker-Book-Rewritten/master/pictures/fishing-tab.png)
+![](https://raw.githubusercontent.com/madsciencecoder/Shticker-Book-Rewritten/master/pictures/about-tab.png)
+
 ### Windows Installer
 
 There is now an official installer for Windows.  Please check the releases page to download the most recent version.  Please note that it does not check for updates for itself yet so be sure to either keep an eye out or you can follow the repository for email updates.
