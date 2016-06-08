@@ -14,15 +14,18 @@ I have created packages through OpenSuse's OBS for the most popular distribution
 
 You can get the packages at https://software.opensuse.org/download.html?project=home%3Amadsciencecoder%3Ashticker-book-rewritten&package=shticker-book-rewritten.  Just click your distribution and follow the instructions for your version.
 
+Note: The packages available have been patched to replace webengine with webkit in the distros that do not provide webengine packages (Debian, Ubuntu, and Fedora).
+
 ### Features
 
 * Automatic downloading and patching of game files
-* Linux version will store game files in the user's home under the folder ToontownRewritten.  This is to allow Schticker Book Rewritten to be installed like a normal package in root but still allow it write access to update the game files.
+* Linux version stores the game files in the user's home under the folder ToontownRewritten.  This is to allow Schticker Book Rewritten to be installed like a normal package in root but still allow it write access to update the game files.
 * Built in group tracker via www.toonhq.org
 * Built in invasion tracker via www.toonhq.org
 * Built in fishing guide via http://siggen.toontown-click.de/fishadvisor/en/ponds.html
 * Unlimited number of toons may be launched from the same launcher, no need to open one per toon
 * Warns if you close the launcher while a game instance is running as it will cause the game to close if the launcher is closed
+* Option to save login details for an unlimited number of accounts
 
 #### Planned Features
 
@@ -38,7 +41,7 @@ This program relies on 2 external libraries: Qt 5 and libbzip2.  QsLog and bsdif
 
 ##### Ubuntu / Debian
 
-Required dependency packages: `qt5-qmake libqt5webkit5-dev build-essential libbz2-dev`
+Required dependency packages: `qt5-qmake build-essential libbz2-dev`.  Qt's webengine is necessary but they do not provide packages.
 
 To build and install:
 ```
@@ -61,7 +64,7 @@ sudo make install
 
 ##### Fedora
 
-Required dependency packages: `qt5-qtbase-devel qt5-qtwebkit-devel gcc-c++ bzip2-devel`
+Required dependency packages: `qt5-qtbase-devel qt5-qtwebengine-devel gcc-c++ bzip2-devel`.  Qt's webengine is necessary but they do not provide packages until Fedora 24 is released.
 
 To build and install:
 ```
@@ -72,7 +75,9 @@ sudo make install
 
 ##### Arch
 
-TODO: add dependency packages and link to AUR PKGBUILD
+Required dependency packages: `bzip2 qt5-base qt5-webengine`.
+
+AUR package for the latest git version: https://aur.archlinux.org/packages/shticker-book-rewritten-git/.
 
 #### Windows
 
