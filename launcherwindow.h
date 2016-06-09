@@ -70,7 +70,6 @@ private:
 
     void readSettings();
     void writeSettings();
-    void updateSavedToons();
 
 protected:
     void closeEvent(QCloseEvent *event);

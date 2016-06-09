@@ -41,7 +41,9 @@ LauncherWindow::LauncherWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui
     readSettings();
 
     //setup saved toons
-    updateSavedToons();
+    ui->savedToonsBox->addItem("Saved logins");
+    ui->savedToonsBox->addItems(savedUsers);
+
     connect(ui->savedToonsBox, SIGNAL(currentIndexChanged(QString)), this, SLOT(fillCredentials(QString)));
 
     //check to make sure the cache directory exists and make it if it doesn't
@@ -163,12 +165,13 @@ void LauncherWindow::gameHasStarted()
         {
             savedUsers.append(ui->usernameBox->text());
             savedPasses.append(ui->passwordBox->text());
+
+            ui->savedToonsBox->addItem(ui->usernameBox->text());
         }
 
         //uncheck the box now
         ui->saveCredentialsBox->setChecked(false);
-
-        updateSavedToons();
+        writeSettings();
     }
 
     //clear the username and password boxes to prevent accidental relaunching of the game and to be ready to launch another
@@ -268,15 +271,6 @@ void LauncherWindow::readSettings()
     savedUsers = settings.value("username").toStringList();
     savedPasses = settings.value("pass").toStringList();
     settings.endGroup();
-}
-
-void LauncherWindow::updateSavedToons()
-{
-    //clear the old menus
-    ui->savedToonsBox->clear();
-
-    ui->savedToonsBox->addItem("Saved logins");
-    ui->savedToonsBox->addItems(savedUsers);
 }
 
 void LauncherWindow::fillCredentials(QString username)
