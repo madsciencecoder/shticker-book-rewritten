@@ -63,6 +63,7 @@ private:
     QTimer *timer;
     QString lineToken;
     QProcess *gameProcess;
+    QString filePath;
 
     QByteArray loginApiWorker(QByteArray);
     void startTwoFactorAuthentication();

@@ -1,3 +1,0 @@
-[submodule "libraries/qslog"]
-	path = libraries/qslog
-	url = https://github.com/madsciencecoder/QsLog.git

@@ -39,7 +39,7 @@ public:
     explicit LauncherWindow(QWidget *parent = 0);
     ~LauncherWindow();
 
-public slots:
+private slots:
     void relayMessage(QString);
     void relayProgressBarReceived(int);
     void relayShowProgressBar();
@@ -51,6 +51,8 @@ public slots:
     void authenticationFailed();
     void newsViewLoaded();
     void fillCredentials(QString);
+    void changeFilePath();
+    void updateFiles();
 
 signals:
     void sendMessage(QString);
@@ -67,9 +69,12 @@ private:
     QThread *updateThread;
     QStringList savedUsers;
     QStringList savedPasses;
+    QString filePath;
+    QString cachePath;
 
     void readSettings();
     void writeSettings();
+    void setFilePath();
 
 protected:
     void closeEvent(QCloseEvent *event);

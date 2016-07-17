@@ -38,7 +38,8 @@ SOURCES += main.cpp\
     loginworker.cpp \
     twofactorwindow.cpp \
     patchworker.cpp \
-    hashworker.cpp
+    hashworker.cpp \
+    filelocationchooser.cpp
 
 HEADERS  += launcherwindow.h \
     globaldefines.h \
@@ -49,17 +50,17 @@ HEADERS  += launcherwindow.h \
     loginworker.h \
     twofactorwindow.h \
     patchworker.h \
-    hashworker.h
+    hashworker.h \
+    filelocationchooser.h
 
 FORMS    += launcherwindow.ui \
-    twofactorwindow.ui
+    twofactorwindow.ui \
+    filelocationchooser.ui
 
 RESOURCES += \
     resources.qrc
 
 LIBS += -lbz2
-
-include(libraries/qslog/QsLog.pri)
 
 DISTFILES += LICENSE
 unix:!mac {
@@ -87,3 +88,5 @@ unix:!mac {
     icon256.path = $$DATADIR/icons/hicolor/256x256/apps
     icon256.files += resources/256x256/shticker-book-rewritten.png
 }
+
+RC_FILE = windows/shticker-book-rewritten.rc

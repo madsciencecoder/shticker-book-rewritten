@@ -21,11 +21,11 @@
 #include "loginworker.h"
 #include "twofactorwindow.h"
 #include "globaldefines.h"
-#include "libraries/qslog/QsLog.h"
 
 #include <QUrlQuery>
 #include <QProcessEnvironment>
 #include <QDir>
+#include <QSettings>
 
 
 LoginWorker::LoginWorker(QObject *parent) : QObject(parent)
@@ -33,6 +33,12 @@ LoginWorker::LoginWorker(QObject *parent) : QObject(parent)
     timer = new QTimer(this);
     timer->setSingleShot(true);
     connect(timer, SIGNAL(timeout()), this, SLOT(timerFinished()));
+
+    QSettings settings("Shticker-Book-Rewritten", "Shticker-Book-Rewritten");
+
+    settings.beginGroup("FilesPath");
+    filePath = settings.value("path").toString();
+    settings.endGroup();
 }
 
 QByteArray LoginWorker::loginApiWorker(QByteArray postData)
@@ -93,7 +99,7 @@ void LoginWorker::authenticationLoop()
     {
         //display the login fail message
         emit sendMessage(jsonObject["banner"].toString());
-        QLOG_INFO() << "Login failed:" << jsonObject["banner"].toString();
+        qDebug() << "Login failed:" << jsonObject["banner"].toString();
 
         //let the main window know it failed to enable login again
         emit authenticationFailed();
@@ -110,7 +116,7 @@ void LoginWorker::authenticationLoop()
     else if(jsonObject["success"].toString() == "delayed")
     {
         //when it isn't quite ready to login yet check again every 0.5 seconds
-        QLOG_INFO() << "Waiting in queue. ETA:" << jsonObject["eta"].toString() << ", Position in line:" << jsonObject["position"].toString();
+        qDebug() << "Waiting in queue. ETA:" << jsonObject["eta"].toString() << ", Position in line:" << jsonObject["position"].toString();
         sendMessage(QString("Waiting in queue. ETA: ") + jsonObject["eta"].toString() + QString(", Position in line: ") + jsonObject["position"].toString());
 
         lineToken = jsonObject["queueToken"].toString();
@@ -122,8 +128,8 @@ void LoginWorker::authenticationLoop()
         QString playCookie = jsonObject["cookie"].toString();
         QString gameServer = jsonObject["gameserver"].toString();
 
-        QLOG_INFO() << "Authenticated fully and starting game!";
-        QLOG_INFO() << "Play cookie:" << playCookie << "Game server:" << gameServer;
+        qDebug() << "Authenticated fully and starting game!";
+        qDebug() << "Play cookie:" << playCookie << "Game server:" << gameServer;
         emit sendMessage("Authentication complete. Starting game now.");
 
         //start the game now that we have the play cookie and server info
@@ -131,7 +137,7 @@ void LoginWorker::authenticationLoop()
     }
     else
     {
-        QLOG_INFO() << "Unable to authenticate.  Error:" << jsonObject["banner"].toString();
+        qDebug() << "Unable to authenticate.  Error:" << jsonObject["banner"].toString();
         emit sendMessage(jsonObject["banner"].toString());
 
         //let the main window know it failed to enable login again
@@ -157,7 +163,7 @@ void LoginWorker::startTwoFactorAuthentication()
     {
         emit sendMessage(jsonObject["banner"].toString());
 
-        QLOG_INFO() << "Partial authentication: starting 2 factor authentication.";
+        qDebug() << "Partial authentication: starting 2 factor authentication.";
 
 
         TwoFactorWindow *twoFactorWindow = new TwoFactorWindow(jsonObject["banner"].toString());
@@ -171,7 +177,7 @@ void LoginWorker::startTwoFactorAuthentication()
         if(receivedToken == "cancel")
         {
             emit sendMessage("Cancelling login.");
-            QLOG_DEBUG() << "Cancelling two factor authentication\n";
+            qDebug() << "Cancelling two factor authentication\n";
             return;
         }
 
@@ -191,7 +197,7 @@ void LoginWorker::startTwoFactorAuthentication()
     }
     if(jsonObject["success"].toString() != "false")
     {
-        QLOG_INFO() << "Two Factor authentication complete";
+        qDebug() << "Two Factor authentication complete";
     }
 
     //go back to the main loop now that we are authenticated
@@ -200,7 +206,7 @@ void LoginWorker::startTwoFactorAuthentication()
 
 void LoginWorker::timerFinished()
 {
-    QLOG_INFO() << "Queued authentication: checking where we stand in line again.";
+    qDebug() << "Queued authentication: checking where we stand in line again.";
 
     //check the login API again to see if we are ready yet
     QByteArray replyData;
@@ -225,12 +231,12 @@ void LoginWorker::timerFinished()
 
 void LoginWorker::startGame(QString cookie, QString gameServer)
 {
-    QLOG_DEBUG() << "Starting game!\n";
+    qDebug() << "Starting game!\n";
 
     gameProcess = new QProcess();
 
-    gameProcess->setWorkingDirectory(FILES_PATH);
-    QDir::setCurrent(FILES_PATH);
+    gameProcess->setWorkingDirectory(filePath);
+    QDir::setCurrent(filePath);
 
     //set the environment variables for the engine
     QProcessEnvironment gameEnvironment = QProcessEnvironment::systemEnvironment();

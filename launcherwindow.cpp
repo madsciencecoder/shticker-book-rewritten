@@ -22,7 +22,7 @@
 #include "ui_launcherwindow.h"
 #include "globaldefines.h"
 #include "updateworker.h"
-#include "libraries/qslog/QsLog.h"
+#include "filelocationchooser.h"
 
 #include <QDir>
 #include <QMessageBox>
@@ -30,6 +30,7 @@
 #include <QProcess>
 #include <QThread>
 #include <QSettings>
+#include <QEventLoop>
 
 LauncherWindow::LauncherWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::LauncherWindow)
 {
@@ -40,21 +41,17 @@ LauncherWindow::LauncherWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui
     //read the previous settings
     readSettings();
 
+    //check if the user has already chosen a file location for the game files
+    while(filePath == "/")
+    {
+        setFilePath();
+    }
+
     //setup saved toons
     ui->savedToonsBox->addItem("Saved logins");
     ui->savedToonsBox->addItems(savedUsers);
 
     connect(ui->savedToonsBox, SIGNAL(currentIndexChanged(QString)), this, SLOT(fillCredentials(QString)));
-
-    //check to make sure the cache directory exists and make it if it doesn't
-    if(!QDir(FILES_PATH).exists())
-    {
-        QDir().mkdir(FILES_PATH);
-    }
-    if(!QDir(CACHE_DIR).exists())
-    {
-        QDir().mkdir(CACHE_DIR);
-    }
 
     //setup the webviews
     ui->newsWebview->setUrl(QUrl("https://www.toontownrewritten.com/news/launcher"));
@@ -69,23 +66,7 @@ LauncherWindow::LauncherWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui
     emit enableLogin(false);
     loginIsReady = false;
 
-    //Begin updating the game files
-    updateThread = new QThread(this);
-    UpdateWorker *updateWorker = new UpdateWorker();
-    //make a new thread for the updating process since it can bog down the main thread and make the window unresponsive
-    updateWorker->moveToThread(updateThread);
-
-    connect(updateThread, SIGNAL(started()), updateWorker, SLOT(startUpdating()));
-    connect(updateWorker, SIGNAL(updateComplete()), updateThread, SLOT(quit()));
-
-    //allow the update worker to communicate with the main window
-    connect(updateWorker, SIGNAL(sendMessage(QString)), this, SLOT(relayMessage(QString)));
-    connect(updateWorker, SIGNAL(sendProgressBarReceived(int)), this, SLOT(relayProgressBarReceived(int)));
-    connect(updateWorker, SIGNAL(showProgressBar()), this, SLOT(relayShowProgressBar()));
-    connect(updateWorker, SIGNAL(hideProgressBar()), this, SLOT(relayHideProgressBar()));
-    connect(updateWorker, SIGNAL(updateComplete()), this, SLOT(loginReady()));
-
-    updateThread->start();
+    updateFiles();
 }
 
 LauncherWindow::~LauncherWindow()
@@ -123,7 +104,7 @@ void LauncherWindow::initiateLogin()
 {
     if(loginIsReady)
     {
-        QLOG_DEBUG() << "Initiating login sequence\n";
+        qDebug() << "Initiating login sequence\n";
 
         //disable login again to prevent duplicate logins
         emit enableLogin(false);
@@ -141,7 +122,7 @@ void LauncherWindow::initiateLogin()
     }
     else
     {
-        QLOG_DEBUG() << "Login isn't ready, ignoring login event\n";
+        qDebug() << "Login isn't ready, ignoring login event\n";
     }
 }
 
@@ -180,7 +161,7 @@ void LauncherWindow::gameHasStarted()
     //increment to show how many instances are running
     gameInstances++;
 
-    QLOG_DEBUG() << "New game instance, there are now" << gameInstances;
+    qDebug() << "New game instance, there are now" << gameInstances;
 
     //enable login again now that the game has finished starting
     loginReady();
@@ -191,7 +172,7 @@ void LauncherWindow::gameHasFinished()
     //increment to show how many instances are running
     gameInstances--;
 
-    QLOG_DEBUG() << "Game instance has closed, there are now" << gameInstances;
+    qDebug() << "Game instance has closed, there are now" << gameInstances;
 }
 
 void LauncherWindow::authenticationFailed()
@@ -269,6 +250,13 @@ void LauncherWindow::readSettings()
     savedUsers = settings.value("username").toStringList();
     savedPasses = settings.value("pass").toStringList();
     settings.endGroup();
+
+    settings.beginGroup("FilesPath");
+    filePath = settings.value("path").toString();
+    settings.endGroup();
+
+    filePath = filePath + QString("/");
+    cachePath = filePath + QString(".cache/");
 }
 
 void LauncherWindow::fillCredentials(QString username)
@@ -289,4 +277,62 @@ void LauncherWindow::fillCredentials(QString username)
         ui->passwordBox->setText(savedPasses.at(i));
     }
 
+}
+
+void LauncherWindow::updateFiles()
+{
+    //check to make sure the cache directory exists and make it if it doesn't
+    if(!QDir(filePath).exists())
+    {
+        QDir().mkdir(filePath);
+    }
+    if(!QDir(cachePath).exists())
+    {
+        QDir().mkdir(cachePath);
+    }
+
+    //Begin updating the game files
+    updateThread = new QThread(this);
+    UpdateWorker *updateWorker = new UpdateWorker();
+    //make a new thread for the updating process since it can bog down the main thread and make the window unresponsive
+    updateWorker->moveToThread(updateThread);
+
+    connect(updateThread, SIGNAL(started()), updateWorker, SLOT(startUpdating()));
+    connect(updateWorker, SIGNAL(updateComplete()), updateThread, SLOT(quit()));
+
+    //allow the update worker to communicate with the main window
+    connect(updateWorker, SIGNAL(sendMessage(QString)), this, SLOT(relayMessage(QString)));
+    connect(updateWorker, SIGNAL(sendProgressBarReceived(int)), this, SLOT(relayProgressBarReceived(int)));
+    connect(updateWorker, SIGNAL(showProgressBar()), this, SLOT(relayShowProgressBar()));
+    connect(updateWorker, SIGNAL(hideProgressBar()), this, SLOT(relayHideProgressBar()));
+    connect(updateWorker, SIGNAL(updateComplete()), this, SLOT(loginReady()));
+
+    updateThread->start();
+}
+
+void LauncherWindow::changeFilePath()
+{
+    //disable login until files are updated
+    emit enableLogin(false);
+    loginIsReady = false;
+
+    setFilePath();
+    updateFiles();
+}
+
+void LauncherWindow::setFilePath()
+{
+    FileLocationChooser *chooser = new FileLocationChooser;
+    chooser->show();
+    chooser->activateWindow();
+
+    //wait until a path is chosen
+    QEventLoop waitForPath;
+    connect(chooser, SIGNAL(finished()), &waitForPath, SLOT(quit()));
+    connect(chooser, SIGNAL(rejected()), &waitForPath, SLOT(quit()));
+    waitForPath.exec();
+
+    chooser->deleteLater();
+
+    readSettings();
 }

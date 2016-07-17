@@ -19,9 +19,6 @@
  */
 
 #include "launcherwindow.h"
-#include "libraries/qslog/QsLog.h"
-#include "libraries/qslog/QsLogDest.h"
-#include "globaldefines.h"
 
 #include <QApplication>
 #include <QDir>
@@ -29,21 +26,6 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-
-    //initialize logging
-    QsLogging::Logger &logger = QsLogging::Logger::instance();
-
-    //set logging level and file name
-    logger.setLoggingLevel(QsLogging::TraceLevel);
-
-    // Create log destinations
-    QsLogging::DestinationPtr fileDestination(QsLogging::DestinationFactory::MakeFileDestination(LOG_FILE));
-    QsLogging::DestinationPtr debugDestination(QsLogging::DestinationFactory::MakeDebugOutputDestination());
-
-    // set log destinations on the logger
-    logger.addDestination(debugDestination);
-    logger.addDestination(fileDestination);
-
 
     LauncherWindow w;
     w.show();

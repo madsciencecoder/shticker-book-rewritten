@@ -48,13 +48,19 @@
  */
 
 #include "patchworker.h"
-#include "libraries/qslog/QsLog.h"
 
 #include <QFile>
 
 #include <bzlib.h>
 #include <fcntl.h>
+#include <QDebug>
+
+#ifdef Q_OS_WIN32
+#include "windows/fake_unistd.h"
+#define fseeko fseek
+#else
 #include <unistd.h>
+#endif
 
 
 PatchWorker::PatchWorker(QObject *parent) : QObject(parent)
@@ -95,7 +101,7 @@ int PatchWorker::bsdiff_patch(char *patchFile, char *oldFile, char *newFile)
     /* Open patch file */
     if ((f = fopen(patchFile, "rb")) == NULL)
     {
-        QLOG_ERROR() << "Unable to open patch file.";
+        qDebug() << "Unable to open patch file.";
 
         return 1;
     }
@@ -117,7 +123,7 @@ int PatchWorker::bsdiff_patch(char *patchFile, char *oldFile, char *newFile)
     /* Read header */
     if (fread(header, 1, 32, f) < 32)
     {
-        QLOG_ERROR() << "Unable to read patch file's header.";
+        qDebug() << "Unable to read patch file's header.";
 
         return 1;
     }
@@ -125,7 +131,7 @@ int PatchWorker::bsdiff_patch(char *patchFile, char *oldFile, char *newFile)
     /* Check for appropriate magic */
     if (memcmp(header, "BSDIFF40", 8) != 0)
     {
-        QLOG_ERROR() << "Unable to determine patch's version / invalid patch";
+        qDebug() << "Unable to determine patch's version / invalid patch";
 
         return 1;
     }
@@ -136,7 +142,7 @@ int PatchWorker::bsdiff_patch(char *patchFile, char *oldFile, char *newFile)
     newsize=offtin(header+24);
     if((bzctrllen<0) || (bzdatalen<0) || (newsize<0))
     {
-        QLOG_ERROR() << "Unable to determine patch's size / invalid patch";
+        qDebug() << "Unable to determine patch's size / invalid patch";
 
         return 1;
     }
@@ -144,61 +150,61 @@ int PatchWorker::bsdiff_patch(char *patchFile, char *oldFile, char *newFile)
     /* Close patch file and re-open it via libbzip2 at the right places */
     if (fclose(f))
     {
-        QLOG_ERROR() << "Unable to close patch file";
+        qDebug() << "Unable to close patch file";
 
         return 1;
     }
     if ((cpf = fopen(patchFile, "rb")) == NULL)
     {
-        QLOG_ERROR() << "Unable to open patch file with bzip2";
+        qDebug() << "Unable to open patch file with bzip2";
 
         return 1;
     }
     if (fseeko(cpf, 32, SEEK_SET))
     {
-        QLOG_ERROR() << "Unable to seek to the patch data";
+        qDebug() << "Unable to seek to the patch data";
 
         return 1;
     }
     if ((cpfbz2 = BZ2_bzReadOpen(&cbz2err, cpf, 0, 0, NULL, 0)) == NULL)
     {
-        QLOG_ERROR() << "Unable to read with bzip2, bzerror =" << cbz2err;
+        qDebug() << "Unable to read with bzip2, bzerror =" << cbz2err;
 
         return 1;
     }
     if ((dpf = fopen(patchFile, "rb")) == NULL)
     {
-        QLOG_ERROR() << "Unable to open patch file with bzip2 /2";
+        qDebug() << "Unable to open patch file with bzip2 /2";
 
         return 1;
     }
     if (fseeko(dpf, 32 + bzctrllen, SEEK_SET))
     {
-        QLOG_ERROR() << "Unable to seek to the patch data /2";
+        qDebug() << "Unable to seek to the patch data /2";
 
         return 1;
     }
     if ((dpfbz2 = BZ2_bzReadOpen(&dbz2err, dpf, 0, 0, NULL, 0)) == NULL)
     {
-        QLOG_ERROR() << "Unable to read with bzip2 /2, bzerror =" << dbz2err;
+        qDebug() << "Unable to read with bzip2 /2, bzerror =" << dbz2err;
 
         return 1;
     }
     if ((epf = fopen(patchFile, "rb")) == NULL)
     {
-        QLOG_ERROR() << "Unable to open patch file with bzip2 /3";
+        qDebug() << "Unable to open patch file with bzip2 /3";
 
         return 1;
     }
     if (fseeko(epf, 32 + bzctrllen + bzdatalen, SEEK_SET))
     {
-        QLOG_ERROR() << "Unable to seek to the patch data /3";
+        qDebug() << "Unable to seek to the patch data /3";
 
         return 1;
     }
     if ((epfbz2 = BZ2_bzReadOpen(&ebz2err, epf, 0, 0, NULL, 0)) == NULL)
     {
-        QLOG_ERROR() << "Unable to read with bzip2 /3, bzerror =" << ebz2err;
+        qDebug() << "Unable to read with bzip2 /3, bzerror =" << ebz2err;
 
         return 1;
     }
@@ -206,14 +212,14 @@ int PatchWorker::bsdiff_patch(char *patchFile, char *oldFile, char *newFile)
     if(((fd=open(oldFile,OPEN_ARGS,0))<0) || ((oldsize=lseek(fd,0,SEEK_END))==-1) || ((old=(u_char*)malloc(oldsize+1))==NULL) ||
             (lseek(fd,0,SEEK_SET)!=0) || (read(fd,old,oldsize)!=oldsize) || (close(fd)==-1))
     {
-        QLOG_ERROR() << "Unable to open the old file";
+        qDebug() << "Unable to open the old file";
 
         return 1;
     }
 
     if((new_=(u_char*)malloc(newsize+1))==NULL)
     {
-        QLOG_ERROR() << "Unable to allocate the new space";
+        qDebug() << "Unable to allocate the new space";
 
         return 1;
     }
@@ -227,7 +233,7 @@ int PatchWorker::bsdiff_patch(char *patchFile, char *oldFile, char *newFile)
             lenread = BZ2_bzRead(&cbz2err, cpfbz2, buf, 8);
             if ((lenread < 8) || ((cbz2err != BZ_OK) && (cbz2err != BZ_STREAM_END)))
             {
-                QLOG_ERROR() << "Corrupt patch, unable to read control data";
+                qDebug() << "Corrupt patch, unable to read control data";
 
                 return 1;
             }
@@ -237,7 +243,7 @@ int PatchWorker::bsdiff_patch(char *patchFile, char *oldFile, char *newFile)
         /* Sanity-check */
         if(newpos+ctrl[0]>newsize)
         {
-            QLOG_ERROR() << "Corrupt patch, failed during sanity check 1";
+            qDebug() << "Corrupt patch, failed during sanity check 1";
 
             return 1;
         }
@@ -246,7 +252,7 @@ int PatchWorker::bsdiff_patch(char *patchFile, char *oldFile, char *newFile)
         lenread = BZ2_bzRead(&dbz2err, dpfbz2, new_ + newpos, ctrl[0]);
         if ((lenread < ctrl[0]) || ((dbz2err != BZ_OK) && (dbz2err != BZ_STREAM_END)))
         {
-            QLOG_ERROR() << "Corrupt patch, unable to read diff string";
+            qDebug() << "Corrupt patch, unable to read diff string";
 
             return 1;
         }
@@ -267,7 +273,7 @@ int PatchWorker::bsdiff_patch(char *patchFile, char *oldFile, char *newFile)
         /* Sanity-check */
         if(newpos+ctrl[1]>newsize)
         {
-            QLOG_ERROR() << "Corrupt patch, failed during sanity check 2";
+            qDebug() << "Corrupt patch, failed during sanity check 2";
 
             return 1;
         }
@@ -276,7 +282,7 @@ int PatchWorker::bsdiff_patch(char *patchFile, char *oldFile, char *newFile)
         lenread = BZ2_bzRead(&ebz2err, epfbz2, new_ + newpos, ctrl[1]);
         if ((lenread < ctrl[1]) || ((ebz2err != BZ_OK) && (ebz2err != BZ_STREAM_END)))
         {
-            QLOG_ERROR() << "Corrupt patch, unable to read extra string";
+            qDebug() << "Corrupt patch, unable to read extra string";
 
             return 1;
         }
@@ -293,7 +299,7 @@ int PatchWorker::bsdiff_patch(char *patchFile, char *oldFile, char *newFile)
 
     if (fclose(cpf) || fclose(dpf) || fclose(epf))
     {
-        QLOG_ERROR() << "Error closing patch files";
+        qDebug() << "Error closing patch files";
 
         return 1;
     }
@@ -301,7 +307,7 @@ int PatchWorker::bsdiff_patch(char *patchFile, char *oldFile, char *newFile)
     /* Write the new file */
     if(((fd=open(newFile,WRITE_ARGS,0666))<0) || (write(fd,new_,newsize)!=newsize) || (close(fd)==-1))
     {
-        QLOG_ERROR() << "Error writing patched file";
+        qDebug() << "Error writing patched file";
 
         return 1;
     }

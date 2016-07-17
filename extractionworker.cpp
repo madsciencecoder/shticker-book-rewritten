@@ -19,10 +19,10 @@
  */
 
 #include "extractionworker.h"
-#include "libraries/qslog/QsLog.h"
 
 #include <bzlib.h>
 #include <QFile>
+#include <QDebug>
 
 ExtractionWorker::ExtractionWorker(QObject *parent) : QObject(parent)
 {
@@ -31,7 +31,7 @@ ExtractionWorker::ExtractionWorker(QObject *parent) : QObject(parent)
 
 bool ExtractionWorker::extractBz2(QString compressedFileName, QString extractedFileName)
 {
-    QLOG_DEBUG() << "Extracting" << compressedFileName << "to" << extractedFileName;
+    qDebug() << "Extracting" << compressedFileName << "to" << extractedFileName;
 
     FILE *compressedFile;
     BZFILE *bzFile;
@@ -44,7 +44,7 @@ bool ExtractionWorker::extractBz2(QString compressedFileName, QString extractedF
     //open the destination file
     if(!extractedFile.open(QFile::WriteOnly))
     {
-        QLOG_ERROR() << "Unable to open" << extractedFile.fileName();
+        qDebug() << "Unable to open" << extractedFile.fileName();
         return false;
     }
 
@@ -52,7 +52,7 @@ bool ExtractionWorker::extractBz2(QString compressedFileName, QString extractedF
     compressedFile = fopen(compressedFileName.toStdString().c_str(), "rb");
     if(!compressedFile)
     {
-        QLOG_ERROR() << "Error opening file: " << compressedFileName << endl;
+        qDebug() << "Error opening file: " << compressedFileName << endl;
 
         return false;
     }
@@ -60,7 +60,7 @@ bool ExtractionWorker::extractBz2(QString compressedFileName, QString extractedF
     bzFile = BZ2_bzReadOpen(&bzError, compressedFile, 0, 0, NULL, 0);
     if(bzError != BZ_OK)
     {
-        QLOG_ERROR() << "Error opening file to extract:" << compressedFileName;
+        qDebug() << "Error opening file to extract:" << compressedFileName;
         return false;
     }
 
@@ -91,7 +91,7 @@ bool ExtractionWorker::extractBz2(QString compressedFileName, QString extractedF
     if(bzError != BZ_STREAM_END)
     {
         BZ2_bzReadClose(&bzError, bzFile);
-        QLOG_ERROR() << "Error reading compressed file" << compressedFileName << ". BZ error code:" << bzError << endl;
+        qDebug() << "Error reading compressed file" << compressedFileName << ". BZ error code:" << bzError << endl;
 
         return false;
     }
@@ -100,6 +100,6 @@ bool ExtractionWorker::extractBz2(QString compressedFileName, QString extractedF
         BZ2_bzReadClose(&bzError, bzFile);
     }
 
-    QLOG_DEBUG() << "Finished extracting" << extractedFileName;
+    qDebug() << "Finished extracting" << extractedFileName;
     return true;
 }

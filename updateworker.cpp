@@ -23,7 +23,6 @@
 #include "extractionworker.h"
 #include "downloadworker.h"
 #include "patchworker.h"
-#include "libraries/qslog/QsLog.h"
 
 #include <QJsonObject>
 #include <QJsonArray>
@@ -32,10 +31,20 @@
 #include <QFile>
 #include <QUrl>
 #include <QDir>
+#include <QSettings>
 
 UpdateWorker::UpdateWorker(QObject *parent) : QObject(parent)
 {
     hashWorker = new HashWorker(this);
+
+    QSettings settings("Shticker-Book-Rewritten", "Shticker-Book-Rewritten");
+
+    settings.beginGroup("FilesPath");
+    filePath = settings.value("path").toString();
+    settings.endGroup();
+
+    filePath = filePath + QString("/");
+    cachePath = QString(filePath + ".cache/");
 }
 
 void UpdateWorker::startUpdating()
@@ -51,7 +60,7 @@ void UpdateWorker::startUpdating()
 
 void UpdateWorker::patchManifestReady(QJsonDocument patchManifest)
 {
-    QLOG_DEBUG() << "Received patch manifest";
+    qDebug() << "Received patch manifest";
 
     //begin parsing the patch manifest
     QJsonObject manifestObject = patchManifest.object();
@@ -69,12 +78,12 @@ void UpdateWorker::patchManifestReady(QJsonDocument patchManifest)
         QJsonArray platforms = fileObject["only"].toArray();            //look for the platform the file is for
 
         emit sendMessage(QString("Updating file ") + QString::number(currentFileNum) + QString (" of ") + QString::number(fileNamesList.size()) + QString(" (") + fileName + QString(")"));
-        QLOG_DEBUG() << "Checking" << fileName << "for updates";
+        qDebug() << "Checking" << fileName << "for updates";
 
         if(platforms.contains(PLATFORM))
         {
-            QString localBz2FileName = CACHE_DIR + fileObject["dl"].toString();
-            QString localFileName = FILES_PATH + fileName;
+            QString localBz2FileName = cachePath + fileObject["dl"].toString();
+            QString localFileName = filePath + fileName;
             QFile file(localFileName);
             bool fileIsOld = true;
             int i = 0;
@@ -88,17 +97,17 @@ void UpdateWorker::patchManifestReady(QJsonDocument patchManifest)
                 {
                     //generate the SHA1 hash of the file to compare with the patch manifest
                     fileHash = hashWorker->getHash(localFileName);
-                    QLOG_DEBUG() << "Local file's hash is:" << fileHash;
+                    qDebug() << "Local file's hash is:" << fileHash;
 
                     //Check if the hash matches the patch manifest
                     if(fileHash == fileObject["hash"].toString())
                     {
-                        QLOG_DEBUG() << "Hash matches patch manifest, skipping update\n";
+                        qDebug() << "Hash matches patch manifest, skipping update\n";
                         fileIsOld = false;
                     }
                     else
                     {
-                        QLOG_DEBUG() << "Hash does not match patch manifest, checking for a patch";
+                        qDebug() << "Hash does not match patch manifest, checking for a patch";
 
                         QJsonObject patchListObject = fileObject["patches"].toObject();
                         QStringList patchList = patchListObject.keys();
@@ -113,7 +122,7 @@ void UpdateWorker::patchManifestReady(QJsonDocument patchManifest)
                                 QJsonObject patchObject = patchListObject[manifestHash].toObject();
                                 PatchWorker *patchWorker = new PatchWorker(this);
 
-                                QString patchFileName = CACHE_DIR + patchObject["filename"].toString();
+                                QString patchFileName = cachePath + patchObject["filename"].toString();
                                 QString extractedFileName = patchFileName + ".decomp";
 
                                 //get the patch file
@@ -122,27 +131,27 @@ void UpdateWorker::patchManifestReady(QJsonDocument patchManifest)
                                 //verify the downloaded patch is good
                                 if(hashWorker->getHash(extractedFileName) == patchObject["patchHash"].toString())
                                 {
-                                    QLOG_INFO() << "Downloaded patch matches manifest";
+                                    qDebug() << "Downloaded patch matches manifest";
                                 }
                                 else
                                 {
-                                    QLOG_ERROR() << "Downloaded patch does not match manifet";
+                                    qDebug() << "Downloaded patch does not match manifet";
                                 }
 
                                 //patch the file
-                                QLOG_INFO() << "extracted name:" << extractedFileName << "old name:" << localFileName;
+                                qDebug() << "extracted name:" << extractedFileName << "old name:" << localFileName;
                                 patchWorker->patchFile(extractedFileName,localFileName);
                                 hasBeenPatched = true;
 
                                 //check if the patch updated the file fully
                                 if(hashWorker->getHash(localFileName) == fileObject["hash"].toString())
                                 {
-                                    QLOG_INFO() << "File has been patched fully\n";
+                                    qDebug() << "File has been patched fully\n";
                                     fileIsOld = false;
                                 }
                                 else
                                 {
-                                    QLOG_ERROR() << "Downloaded file fails integrity check, looping again to check for patches.  This is try" << i << "of 5";
+                                    qDebug() << "Downloaded file fails integrity check, looping again to check for patches.  This is try" << i << "of 5";
                                 }
 
                                 //delete the patch files
@@ -153,7 +162,7 @@ void UpdateWorker::patchManifestReady(QJsonDocument patchManifest)
                         //check if it was patched and if not no patch is available but still out of date so try to get a new copy
                         if(hasBeenPatched == false)
                         {
-                            QLOG_DEBUG() << "No patch found, downloading a fresh copy";
+                            qDebug() << "No patch found, downloading a fresh copy";
 
                             getNewFile(fileObject["dl"].toString(), localBz2FileName, localFileName, fileObject["compHash"].toString());
 
@@ -161,12 +170,12 @@ void UpdateWorker::patchManifestReady(QJsonDocument patchManifest)
                             fileHash = hashWorker->getHash(localFileName);
                             if(fileHash == fileObject["hash"].toString())
                             {
-                                QLOG_DEBUG() << "Downloaded file's integrity has been verified\n";
+                                qDebug() << "Downloaded file's integrity has been verified\n";
                                 fileIsOld = false;
                             }
                             else
                             {
-                                QLOG_ERROR() << "Downloaded file fails integrity check, looping again to check for patches.  This is try" << i << "of 5";
+                                qDebug() << "Downloaded file fails integrity check, looping again to check for patches.  This is try" << i << "of 5";
                             }
                         }
                         //delete the zipped file
@@ -182,12 +191,12 @@ void UpdateWorker::patchManifestReady(QJsonDocument patchManifest)
                     fileHash = hashWorker->getHash(localFileName);
                     if(fileHash == fileObject["hash"].toString())
                     {
-                        QLOG_DEBUG() << "Downloaded file's integrity has been verified\n";
+                        qDebug() << "Downloaded file's integrity has been verified\n";
                         fileIsOld = false;
                     }
                     else
                     {
-                        QLOG_ERROR() << "Downloaded file fails integrity check, looping again to check for patches.  This is try" << i << "of 5";
+                        qDebug() << "Downloaded file fails integrity check, looping again to check for patches.  This is try" << i << "of 5";
                     }
 
                     //delete the zipped file
@@ -197,7 +206,7 @@ void UpdateWorker::patchManifestReady(QJsonDocument patchManifest)
         }
         else
         {
-            QLOG_DEBUG() << "Skipping, it is not for our platform\n";
+            qDebug() << "Skipping, it is not for our platform\n";
         }
 
         currentFileNum++;
@@ -211,16 +220,16 @@ void UpdateWorker::patchManifestReady(QJsonDocument patchManifest)
     #ifdef Q_OS_LINUX
         #include <QFileInfo>
 
-        QFileInfo engine(QString(FILES_PATH + "TTREngine"));
+        QFileInfo engine(QString(filePath + "TTREngine"));
 
         if(engine.isExecutable())
         {
-            QLOG_DEBUG() << "TTREngine is already executable\n";
+            qDebug() << "TTREngine is already executable\n";
         }
         else
         {
-            QLOG_DEBUG() << "TTREngine is not executable, setting it\n";
-            QFile engineFile(QString(FILES_PATH + "TTREngine"));
+            qDebug() << "TTREngine is not executable, setting it\n";
+            QFile engineFile(QString(filePath + "TTREngine"));
             engineFile.setPermissions(QFile::ExeOwner | QFile::ReadUser | QFile::WriteOwner);
 
             engineFile.flush();
@@ -233,9 +242,9 @@ void UpdateWorker::patchManifestReady(QJsonDocument patchManifest)
 void UpdateWorker::startDownload(QString fileToDownload)
 {
     DownloadWorker *downloadWorker = new DownloadWorker(this);
-    QString downloadFileName = CACHE_DIR + fileToDownload;
+    QString downloadFileName = cachePath + fileToDownload;
 
-    QLOG_DEBUG() << "Downloading" << fileToDownload;
+    qDebug() << "Downloading" << fileToDownload;
 
     connect(downloadWorker, SIGNAL(hideProgressBar()), this, SLOT(relayHideProgressBar()));
     connect(downloadWorker, SIGNAL(showProgressBar()), this, SLOT(relayShowProgressBar()));
@@ -246,11 +255,11 @@ void UpdateWorker::startDownload(QString fileToDownload)
 
     if (sucessfulDownload)
     {
-        QLOG_DEBUG() << "Successfully downloaded file" << downloadFileName;
+        qDebug() << "Successfully downloaded file" << downloadFileName;
     }
     else
     {
-        QLOG_ERROR() << "Error downloding file" << downloadFileName << endl;
+        qDebug() << "Error downloding file" << downloadFileName << endl;
     }
 }
 
@@ -264,11 +273,11 @@ void UpdateWorker::getNewFile(QString dlFile, QString localBz2FileName, QString 
 
     if(fileHash == compHash)
     {
-        QLOG_INFO() << "Integrity of" << dlFile << "is valid.";
+        qDebug() << "Integrity of" << dlFile << "is valid.";
     }
     else
     {
-        QLOG_ERROR() << "Failure verifying the integrity of" << dlFile;
+        qDebug() << "Failure verifying the integrity of" << dlFile;
     }
 
     //extract the file

@@ -19,10 +19,10 @@
  */
 
 #include "hashworker.h"
-#include "libraries/qslog/QsLog.h"
 
 #include <QFile>
 #include <QCryptographicHash>
+#include <QDebug>
 
 HashWorker::HashWorker(QObject *parent) : QObject(parent)
 {
@@ -40,7 +40,7 @@ QByteArray HashWorker::getHash(QString fileName)
     //Attempt to open the file
     if(!file.open(QFile::ReadOnly))
     {
-        QLOG_ERROR() << "Unable to read file:" << fileName << ". Error:" << file.errorString() << "\n";
+        qDebug() << "Unable to read file:" << fileName << ". Error:" << file.errorString() << "\n";
     }
     else
     {

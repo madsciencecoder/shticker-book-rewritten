@@ -20,7 +20,6 @@
 
 #include "downloadworker.h"
 #include "globaldefines.h"
-#include "libraries/qslog/QsLog.h"
 
 #include <QUrl>
 #include <QDir>
@@ -41,11 +40,11 @@ bool DownloadWorker::getFile(QUrl url, QString fileName)
     //open the file to write into
     if(file->open(QIODevice::WriteOnly))
     {
-        QLOG_DEBUG() << "Getting the bz2 file" << file->fileName();
+        qDebug() << "Getting the bz2 file" << file->fileName();
     }
     else
     {
-        QLOG_ERROR() << "Unable to open or write to" << file->fileName();
+        qDebug() << "Unable to open or write to" << file->fileName();
         delete file;
         file = 0;
         return false;
@@ -79,7 +78,7 @@ bool DownloadWorker::getFile(QUrl url, QString fileName)
 
     if(reply->error())
     {
-        QLOG_ERROR() << "There was an error downloading" << url << "Error:" << reply->errorString() << endl;
+        qDebug() << "There was an error downloading" << url << "Error:" << reply->errorString() << endl;
 
         reply->deleteLater();
 

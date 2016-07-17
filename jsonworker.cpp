@@ -19,7 +19,6 @@
  */
 
 #include "jsonworker.h"
-#include "libraries/qslog/QsLog.h"
 
 #include <QByteArray>
 #include <QNetworkRequest>
@@ -34,7 +33,7 @@ JsonWorker::JsonWorker(QObject *parent) : QObject(parent)
 //Retrieves the passed url and creates a JSON document to work with various APIs
 void JsonWorker::startRequest(QUrl url)
 {
-    QLOG_DEBUG() << "Downloading file:" << url.url();
+    qDebug() << "Downloading file:" << url.url();
 
     networkManager = new QNetworkAccessManager(this);           //Network manager to handle downloading the JSON document
 
@@ -52,13 +51,13 @@ void JsonWorker::requestFinished()
     //Check for any errors getting the file
     if(reply->error())
     {
-        QLOG_ERROR() << "Error downloading file:" << reply->errorString();
+        qDebug() << "Error downloading file:" << reply->errorString();
     }
     else
     {
         rawData = reply->readAll();
 
-        QLOG_DEBUG() << "Successfully retreived file";
+        qDebug() << "Successfully retreived file";
     }
 
     reply->deleteLater();   //delete file to prevent using too much ram
@@ -68,11 +67,11 @@ void JsonWorker::requestFinished()
     //Check for errors during parsing
     if(parseError->error != QJsonParseError::NoError)
     {
-        QLOG_ERROR() << "Error parsing JSON file:" << parseError->errorString() << endl;
+        qDebug() << "Error parsing JSON file:" << parseError->errorString() << endl;
     }
     else
     {
-        QLOG_DEBUG() << "Successfully parsed JSON document\n";
+        qDebug() << "Successfully parsed JSON document\n";
     }
 
     emit documentReady(jsonDocument);

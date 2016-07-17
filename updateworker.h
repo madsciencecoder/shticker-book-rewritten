@@ -53,6 +53,8 @@ private slots:
 private:
     JsonWorker *jsonWorker;
     HashWorker *hashWorker;
+    QString filePath;
+    QString cachePath;
 
     void startDownload(QString);
     void getNewFile(QString, QString, QString, QString);

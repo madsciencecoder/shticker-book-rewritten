@@ -20,7 +20,7 @@ There is now an official installer for Windows.  Please check the releases page 
 
 ### Linux Packages
 
-I have created packages through OpenSuse's OBS for the most popular distributions.  There are currently packages for OpenSuse 42.1 and Tumbleweed, Fedora 22 and 23, Debian 8, and Ubuntu 15.04, 15.10, and 16.04 LTS.
+I have created packages through OpenSuse's OBS for the most popular distributions.  There are currently packages for OpenSuse 42.1 and Tumbleweed, Fedora 22, 23, and 24, Debian 8, and Ubuntu 15.04, 15.10, and 16.04 LTS.
 
 You can get the packages at https://software.opensuse.org/download.html?project=home%3Amadsciencecoder%3Ashticker-book-rewritten&package=shticker-book-rewritten.  Just click your distribution and follow the instructions for your version.
 
@@ -45,7 +45,7 @@ Note: The packages available have been patched to replace webengine with webkit 
 
 ### How to Compile
 
-This program relies on 2 external libraries: Qt 5 and libbzip2.  QsLog and bsdiff are also used but are embedded into the project.  QsLog is provided as a git submodule so you will need to pull it manually or use git clone --recursive.
+This program relies on 2 external libraries: Qt 5 and libbzip2.  Bsdiff is also used but are embedded into the project.
 
 #### Linux based distros
 
