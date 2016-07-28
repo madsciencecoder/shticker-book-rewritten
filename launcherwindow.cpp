@@ -251,6 +251,13 @@ void LauncherWindow::readSettings()
     savedPasses = settings.value("pass").toStringList();
     settings.endGroup();
 
+    readSettingsPath();
+}
+
+void LauncherWindow::readSettingsPath()
+{
+    QSettings settings("Shticker-Book-Rewritten", "Shticker-Book-Rewritten");
+
     settings.beginGroup("FilesPath");
     filePath = settings.value("path").toString();
     settings.endGroup();
@@ -334,5 +341,5 @@ void LauncherWindow::setFilePath()
 
     chooser->deleteLater();
 
-    readSettings();
+    readSettingsPath();
 }

@@ -73,6 +73,7 @@ private:
     QString cachePath;
 
     void readSettings();
+    void readSettingsPath();
     void writeSettings();
     void setFilePath();
 
