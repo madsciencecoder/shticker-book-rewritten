@@ -46,6 +46,13 @@ FileLocationChooser::~FileLocationChooser()
 
 void FileLocationChooser::pathChosen()
 {
+    QDir dir;
+    //check to see if it already exists
+    if(!dir.exists(ui->filePathEdit->text()))
+    {
+        dir.mkpath(ui->filePathEdit->text());
+    }
+
     //make sure the user has write permissions
     QFileInfo info(ui->filePathEdit->text());
 
