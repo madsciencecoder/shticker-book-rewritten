@@ -177,6 +177,7 @@ void LoginWorker::startTwoFactorAuthentication()
         if(receivedToken == "cancel")
         {
             emit sendMessage("Cancelling login.");
+            emit authenticationFailed();
             qDebug() << "Cancelling two factor authentication\n";
             return;
         }
