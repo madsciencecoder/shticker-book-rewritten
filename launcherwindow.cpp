@@ -114,7 +114,7 @@ void LauncherWindow::initiateLogin()
 
         connect(loginWorker, SIGNAL(sendMessage(QString)), this, SLOT(relayMessage(QString)));
         connect(loginWorker, SIGNAL(gameStarted()), this, SLOT(gameHasStarted()));
-        connect(loginWorker, SIGNAL(gameFinished()), this, SLOT(gameHasFinished()));
+        connect(loginWorker, SIGNAL(gameFinished(int, QByteArray)), this, SLOT(gameHasFinished(int, QByteArray)));
         connect(loginWorker, SIGNAL(authenticationFailed()), this, SLOT(authenticationFailed()));
 
         //start login and then the game
@@ -167,12 +167,22 @@ void LauncherWindow::gameHasStarted()
     loginReady();
 }
 
-void LauncherWindow::gameHasFinished()
+void LauncherWindow::gameHasFinished(int exitCode, QByteArray gameOutput)
 {
     //increment to show how many instances are running
     gameInstances--;
 
-    qDebug() << "Game instance has closed, there are now" << gameInstances;
+    qDebug() << "Game instance has closed, there are now" << gameInstances << "Exit code is:" << exitCode;
+
+    if(exitCode != 0)
+    {
+        qDebug() << "TTR has crashed. Output from the engine is:" << gameOutput;
+        emit sendMessage("Looks like Toontown Rewritten has crashed.");
+
+        QMessageBox::warning(this, "Toontown Rewritten has crashed.",
+                             "Looks like Toontown Rewritten has crashed. The engine's error message is:\n" + gameOutput,
+                             QMessageBox::Ok);
+    }
 }
 
 void LauncherWindow::authenticationFailed()

@@ -47,7 +47,7 @@ private slots:
     void loginReady();
     void initiateLogin();
     void gameHasStarted();
-    void gameHasFinished();
+    void gameHasFinished(int, QByteArray);
     void authenticationFailed();
     void newsViewLoaded();
     void fillCredentials(QString);

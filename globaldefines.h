@@ -27,7 +27,7 @@
 #ifdef Q_OS_LINUX
 #define DEFAULT_PATH QDir::homePath() + QString("/ToontownRewritten")
 #define PLATFORM    "linux2"
-#define ENGINE_FILENAME QString("TTREngine")
+#define ENGINE_FILENAME QString("./TTREngine")
 
 //for windows support (should now work)
 #elif defined(Q_OS_WIN)

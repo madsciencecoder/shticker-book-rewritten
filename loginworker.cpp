@@ -258,7 +258,7 @@ void LoginWorker::gameHasStarted()
     emit gameStarted();
 }
 
-void LoginWorker::gameHasFinished(int)
+void LoginWorker::gameHasFinished(int exitCode)
 {
-    emit gameFinished();
+    emit gameFinished(exitCode, gameProcess->readAllStandardError());
 }
