@@ -31,7 +31,7 @@
 
 //for windows support (should now work)
 #elif defined(Q_OS_WIN)
-#define DEFAULT_PATH QDir::currentPath()
+#define DEFAULT_PATH QString(QDir::currentPath()) + QString("/Game-Files")
 #define ENGINE_FILENAME QString("TTREngine.exe")
 #define PLATFORM    "win32"
 
