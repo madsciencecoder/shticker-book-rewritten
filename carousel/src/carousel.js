@@ -5,7 +5,7 @@ $(document).ready(function() {
     "https://github.com/madsciencecoder/Shticker-Book-Rewritten/raw/gh-pages/images/Linux-Main.png",
     "https://github.com/madsciencecoder/Shticker-Book-Rewritten/raw/gh-pages/images/Linux-Group.png",
     "https://github.com/madsciencecoder/Shticker-Book-Rewritten/raw/gh-pages/images/Linux-Inv.png",
-    "https://github.com/madsciencecoder/Shticker-Book-Rewritten/raw/gh-pages/images/Linux-Fish.png"
+    "https://github.com/madsciencecoder/Shticker-Book-Rewritten/raw/gh-pages/images/Linux-Fish.png",
     "https://github.com/madsciencecoder/Shticker-Book-Rewritten/raw/gh-pages/images/Mac-Settings.png",
     "https://github.com/madsciencecoder/Shticker-Book-Rewritten/raw/gh-pages/images/Mac-Main.png",
     "https://github.com/madsciencecoder/Shticker-Book-Rewritten/raw/gh-pages/images/Mac-Group.png",
