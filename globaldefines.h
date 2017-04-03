@@ -49,4 +49,4 @@
 #define PATCH_MANIFEST_URL "https://cdn.toontownrewritten.com/content/patchmanifest.txt"
 
 //content distribution URL
-#define CDN_URL "https://cdn.toontownrewritten.com/content/"
+#define CDN_URL "https://cdn.toontownrewritten.com/content/patches/"
