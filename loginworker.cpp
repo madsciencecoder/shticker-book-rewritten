@@ -243,6 +243,11 @@ void LoginWorker::startGame(QString cookie, QString gameServer)
     QProcessEnvironment gameEnvironment = QProcessEnvironment::systemEnvironment();
     gameEnvironment.insert("TTR_PLAYCOOKIE", cookie);
     gameEnvironment.insert("TTR_GAMESERVER", gameServer);
+
+#ifdef Q_OS_MAC
+    gameEnvironment.insert("DYLD_LIBRARY_PATH", LIBRARY_PATH);
+#endif
+
     gameProcess->setProcessEnvironment(gameEnvironment);
 
     connect(gameProcess, SIGNAL(started()), this, SLOT(gameHasStarted()));

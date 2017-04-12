@@ -37,6 +37,10 @@
 #endif
 //*********************************************************
 
+#ifdef Q_OS_MAC
+#include <sys/types.h>
+#endif
+
 class PatchWorker : public QObject
 {
     Q_OBJECT

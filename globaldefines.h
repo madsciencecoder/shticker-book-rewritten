@@ -37,9 +37,10 @@
 
 //For OS X support (not used because no mac to compile and test on)
 #elif defined(Q_OS_MAC)
-#define DEFAULT_PATH ""
-#define ENGINE_FILENAME ""
-#define PLATFORM    "darwin"
+#define DEFAULT_PATH QDir::homePath() + QString("/Library/Application Support/Toontown Rewritten")
+#define LIBRARY_PATH QString("./Libraries.bundle")
+#define ENGINE_FILENAME QString("\"./Toontown Rewritten\"")
+#define PLATFORM "darwin"
 
 #else
 #error "Unsupported platform."
