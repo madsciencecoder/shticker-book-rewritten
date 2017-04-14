@@ -53,6 +53,8 @@ private slots:
     void fillCredentials(QString);
     void changeFilePath();
     void updateFiles();
+    void updatesReady();
+    void toggleAutoUpdates();
 
 signals:
     void sendMessage(QString);
@@ -60,6 +62,7 @@ signals:
     void showProgressBar();
     void hideProgressBar();
     void enableLogin(bool);
+    void enableUpdate(bool);
 
 private:
     Ui::LauncherWindow *ui;
@@ -71,6 +74,7 @@ private:
     QStringList savedPasses;
     QString filePath;
     QString cachePath;
+    bool autoUpdate;
 
     void readSettings();
     void readSettingsPath();

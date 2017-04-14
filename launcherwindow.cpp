@@ -37,6 +37,9 @@ LauncherWindow::LauncherWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui
     gameInstances = 0;
 
     ui->setupUi(this);
+    connect(this, SIGNAL(enableUpdate(bool)), ui->updateButton, SLOT(setEnabled(bool)));
+    connect(ui->updatesCheckBox, SIGNAL(toggled(bool)), this, SLOT(toggleAutoUpdates()));
+    connect(ui->updateButton, SIGNAL(clicked(bool)), this, SLOT(updateFiles()));
 
     //read the previous settings
     readSettings();
@@ -66,7 +69,15 @@ LauncherWindow::LauncherWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui
     emit enableLogin(false);
     loginIsReady = false;
 
-    updateFiles();
+    if(autoUpdate)
+    {
+        updateFiles();
+    }
+    else
+    {
+        loginReady();
+        ui->progressBar->hide();
+    }
 }
 
 LauncherWindow::~LauncherWindow()
@@ -94,10 +105,20 @@ void LauncherWindow::relayHideProgressBar()
     emit hideProgressBar();
 }
 
+void LauncherWindow::updatesReady()
+{
+    if(gameInstances == 0)
+    {
+        emit enableUpdate(true);
+    }
+}
+
 void LauncherWindow::loginReady()
 {
     emit enableLogin(true);
     loginIsReady = true;
+
+    emit sendMessage("Logins are ready!");
 }
 
 void LauncherWindow::initiateLogin()
@@ -128,6 +149,9 @@ void LauncherWindow::initiateLogin()
 
 void LauncherWindow::gameHasStarted()
 {
+    //disable updates while an instance is running
+    emit enableUpdate(false);
+
     //check whether to save the credentials or not
     if(ui->saveCredentialsBox->isChecked())
     {
@@ -183,6 +207,9 @@ void LauncherWindow::gameHasFinished(int exitCode, QByteArray gameOutput)
                              "Looks like Toontown Rewritten has crashed. The engine's error message is:\n" + gameOutput,
                              QMessageBox::Ok);
     }
+
+    //re-enable updates (checks to see if no other instances are running as well)
+    updatesReady();
 }
 
 void LauncherWindow::authenticationFailed()
@@ -232,6 +259,20 @@ void LauncherWindow::newsViewLoaded()
     ui->newsWebview->page()->runJavaScript(QString("document.body.style.backgroundColor = \"#141618\";"));
 }
 
+void LauncherWindow::toggleAutoUpdates()
+{
+    if(ui->updatesCheckBox->isChecked())
+    {
+        autoUpdate = true;
+    }
+    else
+    {
+        autoUpdate = false;
+    }
+
+    writeSettings();
+}
+
 void LauncherWindow::writeSettings()
 {
     QSettings settings("Shticker-Book-Rewritten", "Shticker-Book-Rewritten");
@@ -239,6 +280,7 @@ void LauncherWindow::writeSettings()
     settings.beginGroup("LauncherWindow");
     settings.setValue("size", size());
     settings.setValue("pos", pos());
+    settings.setValue("update", autoUpdate);
     settings.endGroup();
 
     settings.beginGroup("Logins");
@@ -254,12 +296,18 @@ void LauncherWindow::readSettings()
     settings.beginGroup("LauncherWindow");
     resize(settings.value("size", QSize(400, 400)).toSize());
     move(settings.value("pos", QPoint(200, 200)).toPoint());
+    autoUpdate = settings.value("update", true).toBool();
     settings.endGroup();
 
     settings.beginGroup("Logins");
     savedUsers = settings.value("username").toStringList();
     savedPasses = settings.value("pass").toStringList();
     settings.endGroup();
+
+    if(autoUpdate)
+    {
+        ui->updatesCheckBox->setChecked(true);
+    }
 
     readSettingsPath();
 }
@@ -298,6 +346,10 @@ void LauncherWindow::fillCredentials(QString username)
 
 void LauncherWindow::updateFiles()
 {
+    ui->progressBar->show();
+
+    emit enableUpdate(false);
+
     //check to make sure the cache directory exists and make it if it doesn't
     if(!QDir(filePath).exists())
     {
@@ -323,6 +375,7 @@ void LauncherWindow::updateFiles()
     connect(updateWorker, SIGNAL(showProgressBar()), this, SLOT(relayShowProgressBar()));
     connect(updateWorker, SIGNAL(hideProgressBar()), this, SLOT(relayHideProgressBar()));
     connect(updateWorker, SIGNAL(updateComplete()), this, SLOT(loginReady()));
+    connect(updateWorker, SIGNAL(updateComplete()), this, SLOT(updatesReady()));
 
     updateThread->start();
 }
