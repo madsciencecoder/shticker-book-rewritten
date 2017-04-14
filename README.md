@@ -2,7 +2,7 @@
 
 Custom launcher for the MMORPG Toontown Rewritten.  Named after the in game shticker book which provides access to various settings and data.  It tries to provide an all in one tool to provide useful tools to make playing easier.
 
-It is designed with being cross-platform in mind but I have not yet had a chance to build it or test for Mac OS X.  If someone would like to, it should just be a matter of changing a few defines in globaldefines.h and configuring the build environment.
+It supports all platforms that Toontown Rewritten does.  MacOS users need to manually allow the app to run by opening the Applications folder in Finder and opening it by pressing the command key while opening the app.  This is because Apple forces apps to be signed but charges for the ability to sign them.
 
 ### Screenshots
 
@@ -20,7 +20,7 @@ There is now an official installer for Windows.  Please check the releases page 
 
 ### Linux Packages
 
-I have created packages through OpenSuse's OBS for the most popular distributions.  There are currently packages for OpenSuse 42.1 and Tumbleweed, Fedora 22, 23, and 24, Debian 8, and Ubuntu 15.04, 15.10, and 16.04 LTS.
+I have created packages through OpenSuse's OBS for the most popular distributions.  There are currently packages for OpenSuse, Fedora, Debian, and Ubuntu.  If there is a version without a repository please open an issue as I may have forgot to update them.
 
 You can get the packages at https://software.opensuse.org/download.html?project=home%3Amadsciencecoder%3Ashticker-book-rewritten&package=shticker-book-rewritten.  Just click your distribution and follow the instructions for your version.
 
@@ -36,6 +36,8 @@ Note: The packages available have been patched to replace webengine with webkit 
 * Unlimited number of toons may be launched from the same launcher, no need to open one per toon
 * Warns if you close the launcher while a game instance is running as it will cause the game to close if the launcher is closed
 * Option to save login details for an unlimited number of accounts
+* Option to turn off automatic game file updates on startup to allow you to login faster
+* Option to update the game files manually
 
 #### Planned Features
 
@@ -95,4 +97,4 @@ The easiest way to compile this on Windows is to download Qt from their website 
 
 #### Mac OS X
 
-Theoretically it may work.  I do not own a Mac or have access to one, however, so I can't really help too much in that regard.  Most of the differences OS X would need in the code are already programmed to replace Linux specific code, however the paths and file names likely would need tweaking in globaldefines.h. 
+Please check the releases page to download the most recent version.  You may need to manually allow the app to run by opening the Applications folder in Finder and opening it by pressing the command key while opening the app.  This is because Apple forces apps to be signed but charges for the ability to sign them.  This only needs to be done once, after that you can launch the app like normal.
