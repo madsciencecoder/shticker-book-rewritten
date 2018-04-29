@@ -22,7 +22,6 @@
 #define UPDATEWORKER_H
 
 #include "jsonworker.h"
-#include "hashworker.h"
 
 #include <QObject>
 #include <QJsonDocument>
@@ -52,7 +51,6 @@ private slots:
 
 private:
     JsonWorker *jsonWorker;
-    HashWorker *hashWorker;
     QString filePath;
     QString cachePath;
 

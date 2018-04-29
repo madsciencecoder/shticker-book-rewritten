@@ -38,8 +38,8 @@ SOURCES += main.cpp\
     loginworker.cpp \
     twofactorwindow.cpp \
     patchworker.cpp \
-    hashworker.cpp \
-    filelocationchooser.cpp
+    filelocationchooser.cpp \
+    utilities.cpp
 
 HEADERS  += launcherwindow.h \
     globaldefines.h \
@@ -50,8 +50,8 @@ HEADERS  += launcherwindow.h \
     loginworker.h \
     twofactorwindow.h \
     patchworker.h \
-    hashworker.h \
-    filelocationchooser.h
+    filelocationchooser.h \
+    utilities.h
 
 FORMS    += launcherwindow.ui \
     twofactorwindow.ui \

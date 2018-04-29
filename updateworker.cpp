@@ -23,6 +23,7 @@
 #include "extractionworker.h"
 #include "downloadworker.h"
 #include "patchworker.h"
+#include "utilities.h"
 
 #include <QJsonObject>
 #include <QJsonArray>
@@ -35,8 +36,6 @@
 
 UpdateWorker::UpdateWorker(QObject *parent) : QObject(parent)
 {
-    hashWorker = new HashWorker(this);
-
     QSettings settings("Shticker-Book-Rewritten", "Shticker-Book-Rewritten");
 
     settings.beginGroup("FilesPath");
@@ -96,7 +95,7 @@ void UpdateWorker::patchManifestReady(QJsonDocument patchManifest)
             if(file.exists())
                 {
                     //generate the SHA1 hash of the file to compare with the patch manifest
-                    fileHash = hashWorker->getHash(localFileName);
+                    fileHash = getHash(localFileName);
                     qDebug() << "Local file's hash is:" << fileHash;
 
                     //Check if the hash matches the patch manifest
@@ -129,7 +128,7 @@ void UpdateWorker::patchManifestReady(QJsonDocument patchManifest)
                                 getNewFile(patchObject["filename"].toString(), patchFileName, extractedFileName, patchObject["compPatchHash"].toString());
 
                                 //verify the downloaded patch is good
-                                if(hashWorker->getHash(extractedFileName) == patchObject["patchHash"].toString())
+                                if(getHash(extractedFileName) == patchObject["patchHash"].toString())
                                 {
                                     qDebug() << "Downloaded patch matches manifest";
                                 }
@@ -144,7 +143,7 @@ void UpdateWorker::patchManifestReady(QJsonDocument patchManifest)
                                 hasBeenPatched = true;
 
                                 //check if the patch updated the file fully
-                                if(hashWorker->getHash(localFileName) == fileObject["hash"].toString())
+                                if(getHash(localFileName) == fileObject["hash"].toString())
                                 {
                                     qDebug() << "File has been patched fully\n";
                                     fileIsOld = false;
@@ -167,7 +166,7 @@ void UpdateWorker::patchManifestReady(QJsonDocument patchManifest)
                             getNewFile(fileObject["dl"].toString(), localBz2FileName, localFileName, fileObject["compHash"].toString());
 
                             //check to make sure it is up to date
-                            fileHash = hashWorker->getHash(localFileName);
+                            fileHash = getHash(localFileName);
                             if(fileHash == fileObject["hash"].toString())
                             {
                                 qDebug() << "Downloaded file's integrity has been verified\n";
@@ -188,7 +187,7 @@ void UpdateWorker::patchManifestReady(QJsonDocument patchManifest)
                     getNewFile(fileObject["dl"].toString(), localBz2FileName, localFileName, fileObject["compHash"].toString());
 
                     //check to make sure it is up to date
-                    fileHash = hashWorker->getHash(localFileName);
+                    fileHash = getHash(localFileName);
                     if(fileHash == fileObject["hash"].toString())
                     {
                         qDebug() << "Downloaded file's integrity has been verified\n";
@@ -269,7 +268,7 @@ void UpdateWorker::getNewFile(QString dlFile, QString localBz2FileName, QString 
     startDownload(dlFile);
 
     //make sure download succeeded, logging for debugging purposes but still extracting because TTR has been known to not update hashes
-    QByteArray fileHash = hashWorker->getHash(localBz2FileName);
+    QByteArray fileHash = getHash(localBz2FileName);
 
     if(fileHash == compHash)
     {
