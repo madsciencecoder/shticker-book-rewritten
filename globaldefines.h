@@ -29,7 +29,13 @@
 #define PLATFORM    "linux2"
 #define ENGINE_FILENAME QString("./TTREngine")
 
-//for windows support (should now work)
+//for windows support (64bit)
+#elif defined(Q_OS_WIN64)
+#define DEFAULT_PATH QString(QDir::currentPath()) + QString("/Game-Files")
+#define ENGINE_FILENAME QString("TTREngine64.exe")
+#define PLATFORM    "win64"
+
+//for windows support (32bit)
 #elif defined(Q_OS_WIN)
 #define DEFAULT_PATH QString(QDir::currentPath()) + QString("/Game-Files")
 #define ENGINE_FILENAME QString("TTREngine.exe")
